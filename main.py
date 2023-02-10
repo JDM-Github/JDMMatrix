@@ -121,11 +121,17 @@
 
 from kivy.app import App
 from kivy.uix.label import Label
+from kivy.core.text import LabelBase
+
+LabelBase.register(
+    fn_regular="asset/consolas.ttf",
+    name="consolas")
+from src import CustomLabel
 
 class GApp(App):
 
     def build(self):
-        return Label(text="HELLO WORLD")
+        return CustomLabel("TEST", "555555", (100, 100), (0, 0))
 
 if __name__ == "__main__":
     GApp().run()
