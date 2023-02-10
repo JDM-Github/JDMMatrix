@@ -120,11 +120,8 @@
 #     MatrixCalculator().run()
 
 from kivy.app import runTouchApp
-from kivy.uix.label import Label
-from kivy.core.text import LabelBase
+from test import Label2
+# from kivy.core.text import LabelBase
 
-LabelBase.register(
-    fn_regular="asset/consolas.ttf",
-    name="consolas")
 
-runTouchApp(Label(text="TEXT", font_name="consolas"))
+runTouchApp(Label2(text="TEXT"))
