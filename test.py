@@ -6,4 +6,4 @@ class Label2(Label): ...
 class NewImage(Image):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.source = "mainBg0.png"
+        self.source = "asset/mainBg0.png"
