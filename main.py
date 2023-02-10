@@ -21,6 +21,7 @@ if kivy.platform != "android":
 from kivy.app import App
 from newUI import MainScreenWidget
 
+
 class MatrixCalculator(App):
 
     def __init__(self, **kwargs):
