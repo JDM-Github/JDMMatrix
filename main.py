@@ -120,8 +120,10 @@
 #     MatrixCalculator().run()
 
 from kivy.app import runTouchApp
-from test import Label2
+from test import Label2, NewImage
 # from kivy.core.text import LabelBase
 
+label = NewImage()
+label.add_widget(Label2(text="TEXTTT", color=(0, 0, 0, 1)))
 
-runTouchApp(Label2(text="TEXT"))
+runTouchApp(label)
