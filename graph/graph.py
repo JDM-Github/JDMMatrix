@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import math
 from kivy.app import App
@@ -6,17 +8,137 @@ from kivy.clock import Clock
 from kivy.uix.textinput import TextInput
 from kivy.uix.scatter import Scatter
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.image import Image
 from kivy.uix.label import Label
-from kivy.graphics import Rectangle, Color, Line
+from kivy.graphics import Rectangle, Color, Line, RoundedRectangle
 from kivy.utils import get_color_from_hex as GetColor
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
 from kivy.uix.label import Label
 from kivy.properties import NumericProperty
-from plyer import filechooser
+from kivy.uix.filechooser import FileChooserListView
 
 from src import CustomWidget
+
+class MainFileChooser(FileChooserListView):
+    
+    def __init__(self, parent, **kwargs):
+        super().__init__(**kwargs)
+        self.rparent = parent
+        self.font_name = "consolas"
+        self.dirselect = True
+        self.filters = [lambda _, filename: not filename.endswith('')]
+    
+    def _show_progress(self):
+        self.rparent.show = False
+        return super()._show_progress()
+
+    def _hide_progress(self):
+        self.rparent.show = True
+        return super()._hide_progress()
+
+class CustomFolderButton(CustomWidget):
+    
+    def __init__(self, name: str, newName: str, **kwargs):
+        self.path = name
+        newName = newName
+        super().__init__((0, 0), (100, Window.height*0.05 if Window.width < Window.height else Window.height*0.1), newName, True, **kwargs)
+        self.selector = True
+        self.size_hint_y = None
+        self.bind(size=self.SizebindCanvas)
+
+    def functions(self):
+        wid = self.parent.parent.parent.selected
+        if wid is self:
+            wid.color2.rgb = GetColor(wid.buttonColor)
+            self.parent.parent.parent.fileChooser.path = self.path
+            self.parent.parent.parent.selected = None            
+        else:
+            if wid: wid.color2.rgb = GetColor(wid.buttonColor)
+            self.parent.parent.parent.selected = self
+
+
+class CustomFileChooser(Widget):
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.selected : CustomFolderButton = None
+        self.size = Window.size
+        self.pos = (0, 0)
+        self.show = True
+        self.navFileChooser()
+    
+    def displayTitle(self):
+        self.title = Label(
+            font_size="32sp", font_name="consolas", color=GetColor(App.get_running_app().CT.CurrentTheme.MENU_BUTTON_COLOR),
+            size=(Window.width, Window.height*0.1),
+            pos=(0, Window.height*0.9), text="JDM FileChooser")
+
+        with self.canvas:
+            Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.MENU_COLOR))
+            Rectangle(size=self.title.size, pos=self.title.pos)
+        self.add_widget(self.title)
+    
+    def navFileChooser(self):
+        self.displayTitle()
+        self.allButtons : list[CustomFolderButton] = list()
+        self.grid = GridLayout(size_hint_y=None, cols=1, padding="10dp", spacing="5dp")
+        self.scroll = ScrollView(size=(Window.width*0.9, Window.height*0.76),
+                                 pos=(Window.width*0.05, Window.height*0.12))
+        self.grid.bind(minimum_height=self.grid.setter('height'))
+        with self.canvas:
+            Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.RESULT_BOX), a=0.8)
+            RoundedRectangle(size=self.scroll.size, pos=self.scroll.pos, radius=[10, 10, 10, 10])
+        self.submitButton = CustomWidget(
+            size=((Window.width * 0.4, Window.height*0.05) if Window.width < Window.height else
+                (Window.width * 0.38, Window.height*0.08)),
+            pos=(Window.width*0.09, ((Window.height - ((Window.height*0.2)*3)) - (Window.height*0.01) - ((((Window.height*0.2) / 4) * 1.5) * (4+1)) )),
+            name="Select Folder", autoCall=True
+        )
+        self.submitButton.func_binder = lambda *_: self.submitLocation()
+        self.add_widget(self.submitButton)
+        self.closeButton = CustomWidget(
+            size=((Window.width * 0.4, Window.height*0.05) if Window.width < Window.height else
+                (Window.width * 0.38, Window.height*0.08)),
+            pos=(Window.width*0.51, ((Window.height - ((Window.height*0.2)*3)) - (Window.height*0.01) - ((((Window.height*0.2) / 4) * 1.5) * (4+1)) )),
+            name="Close", autoCall=True
+        )
+        self.closeButton.func_binder = lambda *_: self.closeFileChoooser()
+        self.add_widget(self.closeButton)
+        
+        self.scroll.add_widget(self.grid)
+        self.add_widget(self.scroll)
+
+        self.fileChooser = MainFileChooser(self)
+        self.fileChooser.bind(files=self.displayAllButtonFiles)
+    
+    def closeFileChoooser(self):
+        parent = self.parent
+        self.parent.remove_widget(self)
+        parent.re_addAll()
+
+    def submitLocation(self):
+        parent = self.parent
+        self.parent.mainPath = self.selected.path
+        self.parent.remove_widget(self)
+        parent.saveGraph()
+
+    def on_touch_down(self, touch):
+        if self.fileChooser._progress: return False
+        return super().on_touch_down(touch)
+
+    def displayAllButtonFiles(self, _, allPath):
+        self.grid.clear_widgets()
+        self.allButtons.clear()
+
+        if self.show is False:
+            for path in allPath:
+                newName = os.path.split(path)[1]
+                newName = newName if newName else ("./" + newName)
+                self.allButtons.append(CustomFolderButton(path, newName))
+                self.grid.add_widget(self.allButtons[-1])
+        else: self.show = False
 
 class Nodes(Widget):
     
@@ -48,22 +170,23 @@ class Nodes(Widget):
             if self.parent.changeMode: self.parent.changeAngleLabel()
 
     def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):      
-            if self.parent.parent.parent.grabbing is None:
-                self.parent.parent.parent.grabbing = self
-                self.old_X = self.position[0]
-                self.old_Y = self.position[1]
-                self.grabX = touch.x
-                self.grabY = touch.y
-                self.parent.parent.parent.de_Select_line()
-                self.parent.parent.parent.setGridValue(self.parent)
+        if self.parent.parent.parent.fileChooserOpened is False:
+            if self.collide_point(*touch.pos):      
+                if self.parent.parent.parent.grabbing is None:
+                    self.parent.parent.parent.grabbing = self
+                    self.old_X = self.position[0]
+                    self.old_Y = self.position[1]
+                    self.grabX = touch.x
+                    self.grabY = touch.y
+                    self.parent.parent.parent.de_Select_line()
+                    self.parent.parent.parent.setGridValue(self.parent)
 
-                self.parent.arrow.img.color = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_ACTIVE)
-                self.parent.color.rgb = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_ACTIVE)
-                if self.parent.parent.parent.show_Coords is False:
-                    self.parent.node1.add_widget(self.parent.node1.label)
-                    self.parent.node2.add_widget(self.parent.node2.label)
-                self.parent.parent.parent.line_selected = self.parent
+                    self.parent.arrow.img.color = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_ACTIVE)
+                    self.parent.color.rgb = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_ACTIVE)
+                    if self.parent.parent.parent.show_Coords is False:
+                        self.parent.node1.add_widget(self.parent.node1.label)
+                        self.parent.node2.add_widget(self.parent.node2.label)
+                    self.parent.parent.parent.line_selected = self.parent
         return super().on_touch_down(touch)
 
     def on_touch_move(self, touch):
@@ -234,6 +357,7 @@ class Graph(Widget):
         self.line_selected : NodeLine = None
         self.stop_text : bool = False
         self.show_Coords : bool = False
+        self.fileChooserOpened : bool = False
         self.minimum_size : int = dp(10)
         self.maximum_size : int = dp(100)
         self.mainPath = App.get_running_app().Matrixconfig.get("GraphMainPath")
@@ -297,11 +421,13 @@ class Graph(Widget):
         self.size = (((maxx * self.blockPadding) * 2), ((maxy * self.blockPadding) * 2))
 
     def saveGraphFunction(self):
-        self.createDir()
         self.de_Select_line()
         self.remove_widget(self.allButton)
         self.remove_widget(self.allStatsLabel)
-
+        self.createDir()
+    
+    def saveGraph(self):
+        App.get_running_app().Matrixconfig["GraphMainPath"] = self.mainPath
         self.width_ = self.blockPadding*(self.cols*2+1)
         self.height_ = self.blockPadding*(self.rows*2+1)
         self.pos_ = (Window.width/2-self.width_/2, Window.height/2-self.height_/2)
@@ -322,11 +448,13 @@ class Graph(Widget):
         self.add_widget(self.allStatsLabel)
         self.mainBgRect.size = Window.size
         self.mainBgRect.pos = (0, 0)
+        self.fileChooserOpened = False
 
     def createDir(self):
+        self.fileChooserOpened = True
         if self.mainPath is None or not os.path.exists(self.mainPath):
-            self.mainPath = filechooser.choose_dir()[0]
-        App.get_running_app().Matrixconfig["GraphMainPath"] = self.mainPath
+            self.add_widget(CustomFileChooser(size=Window.size))
+        else: self.saveGraph()
 
     def de_Select_line(self):
         if self.line_selected:
@@ -441,7 +569,10 @@ class Graph(Widget):
                          self.cameraY + self.pos_[1] + self.blockPadding/2 + ((self.rows-(0 if c+1 > self.cols else 1))*self.blockPadding))
             elif x > Window.width: break 
         for r in range(startY-1 if allLine is False else 0, self.rows*2+1):
-            if remove: break
+            if remove:
+                self.all_Line_hor[c].points = [0, 0, 0, 0]
+                self.all_vertical[c].pos = (0, -Window.height)
+                continue
 
             y = self.cameraY + self.pos_[1] + self.blockPadding/2 + (r*self.blockPadding)
             if (y > -Window.height*0.3 and y < Window.height*1.3) or allLine:
@@ -516,27 +647,28 @@ class Graph(Widget):
                 self.all_Line_hor.append(Line(width=dp(2) if r == self.rows else dp(0.5)))
 
     def on_touch_down(self, touch):
-        touched = False
-        for node in self.all_nodes_line:
-            if node.node1.collide_point(*touch.pos):
-                node.node1.on_touch_down(touch)
-                touched = True
-            if node.node2.collide_point(*touch.pos):
-                node.node2.on_touch_down(touch)
-                touched = True
-        
-        for butt in self.allButton.children:
-            if butt.collide_point(*touch.pos):
-                touched = True
+        if self.fileChooserOpened is False:
+            touched = False
+            for node in self.all_nodes_line:
+                if node.node1.collide_point(*touch.pos):
+                    node.node1.on_touch_down(touch)
+                    touched = True
+                if node.node2.collide_point(*touch.pos):
+                    node.node2.on_touch_down(touch)
+                    touched = True
 
-        if self.grabbing is None and touched is False:
-            self.grabbing = self
-            self.oldCameraX = self.cameraX
-            self.oldCameraY = self.cameraY
-            self.grabX = touch.x
-            self.grabY = touch.y
+            for butt in self.allButton.children:
+                if butt.collide_point(*touch.pos):
+                    touched = True
+
+            if self.grabbing is None and touched is False:
+                self.grabbing = self
+                self.oldCameraX = self.cameraX
+                self.oldCameraY = self.cameraY
+                self.grabX = touch.x
+                self.grabY = touch.y
         return super().on_touch_down(touch)
-  
+    
     def on_touch_move(self, touch):
         if self.grabbing is self:
             self.cameraX = self.oldCameraX + (touch.x - self.grabX)

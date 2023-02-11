@@ -139,7 +139,7 @@ class MatrixHolder(Widget):
         self.position = position
         self.size = (
             (Window.width * 0.8, Window.height*0.3) if Window.width < Window.height else
-            (Window.width * 0.4, Window.width*0.3))
+            (Window.width * 0.4, Window.width*0.28))
         self.pos = ((Window.width*0.1, (
             (Window.height - self.height - (((Window.height*0.2) / 4)*1.5)) if not position else 
             ((Window.height - (self.height*2) - (((Window.height*0.22) / 4)*2.75))))) if Window.width < Window.height else

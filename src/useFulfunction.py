@@ -34,6 +34,7 @@ class CustomLabel(Label):
 class CustomWidget(Widget):
     def __init__(self, pos: list[int, int], size: list[int, int], name: str, autoCall: bool = True, **kwargs):
         super().__init__(**kwargs)
+        self.selector = False
         self.func_binder = lambda: None
         self.clicked = False
         self.name = name
@@ -86,5 +87,6 @@ class CustomWidget(Widget):
             self.functions()
             self.func_binder()
             self.clicked = False
-            if hasattr(self, "color2"): self.color2.rgb = GetColor(self.buttonColor)
+            if self.selector is False:
+                if hasattr(self, "color2"): self.color2.rgb = GetColor(self.buttonColor)
         return super().on_touch_up(touch)

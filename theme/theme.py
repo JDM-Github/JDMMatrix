@@ -254,6 +254,66 @@ class Theme:
         GRAPH_ARROW_TEXT = "03d5f5",
         GRAPH_STATS = "55aaff",
     )
+    GALAXY : AllColor = AllColor(
+        WINDOW_BACKGROUND = "333333",
+        MAIN_BACKGROUND="333333",
+        MAIN_BG_SOURCE="asset/mainBg0.png",
+        THEME_FG="FFFFFF",
+        THEME_COLOR = "000000",
+
+        BUTTON_LINE="FFFFFF",
+        BUTTON_FG="FFFFFF",
+        BUTTON_COLOR="444444",
+        BUTTON_PRESSED="666666",
+        
+        EXIT_LINE = "FFFFFF" ,
+        EXIT_COLOR = "111111",
+        EXIT_FG = "FFFFFF",
+        
+        MATRIX_BUTTON_LINE="FFFFFF",
+        MATRIX_BUTTON_FG ="FFFFFF",
+        MATRIX_BUTTON_COLOR="444444",
+        MATRIX_BUTTON_PRESSED="666666",
+        
+        MATRIX_ENTRY_COLOR="111111",
+        MATRIX_ENTRY_SELECTION="FFFFFF66",
+        MATRIX_ENTRY_FG="FFFFFF",
+        MATRIX_ENTRY_CURSOR="FFFFFF",
+        
+        MATRIX_LINE="FFFFFF",
+        MATRIX_BOX="444444",
+        
+        MENU_COLOR = "111111",
+        MENU_BUTTON_COLOR="666666",
+        MENU_BUTTON_PRESSED="FFFFFF",
+        
+        TITLE_COLOR="00496c",
+        ERROR_COLOR="FF0000",
+        STEP_BY_STEP="00FF00",
+        NUMBER_COLOR="2596BE",
+        NORMAL_COLOR="FFFFFF",
+        
+        FUNC_BUTTON_LINE="FFFFFF",
+        FUNC_BUTTON_FG="FFFFFF",
+        FUNC_BUTTON_COLOR="444444",
+        FUNC_BUTTON_PRESSED="666666",
+        
+        FUNC_ENTRY_SELECTION="FFFFFF66",
+        FUNC_ENTRY_FG="FFFFFF",
+        FUNC_ENTRY_CURSOR="FFFFFF",
+        
+        RESULT_LINE="FFFFFF",
+        RESULT_BOX="111111",
+
+        GRAPH_BG = "333333",
+        GRAPH_LINE = "000000",
+        GRAPH_NUM_VERT = "FF6666",
+        GRAPH_NUM_HOR = "6666FF",
+        GRAPH_ARROW_ACTIVE = "00ff00",
+        GRAPH_ARROW_NACTIVE = "888888",
+        GRAPH_ARROW_TEXT = "ffffff",
+        GRAPH_STATS = "ffffff",
+    )
     BLANK : AllColor = AllColor(
         WINDOW_BACKGROUND = "333333",
         MAIN_BACKGROUND="333333",
@@ -314,4 +374,4 @@ class Theme:
         GRAPH_ARROW_TEXT = "ffffff",
         GRAPH_STATS = "ffffff",
     )
-    CurrentTheme : AllColor = HELLOKITTY
+    CurrentTheme : AllColor = ORIGINAL

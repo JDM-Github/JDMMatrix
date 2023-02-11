@@ -90,10 +90,10 @@ class ThemeWidget(Widget):
     def allTheme(self):
         app = App.get_running_app().CT.CurrentTheme
         self.allThemeList = [
-            ["HELLOKITTY", Theme.HELLOKITTY.MAIN_BG_SOURCE, Theme.HELLOKITTY.MAIN_BACKGROUND, app.THEME_FG],
             ["ORIGINAL", Theme.ORIGINAL.MAIN_BG_SOURCE, Theme.ORIGINAL.MAIN_BACKGROUND, app.THEME_FG],
+            ["HELLOKITTY", Theme.HELLOKITTY.MAIN_BG_SOURCE, Theme.HELLOKITTY.MAIN_BACKGROUND, app.THEME_FG],
             ["JDM", Theme.JDM.MAIN_BG_SOURCE, Theme.JDM.MAIN_BACKGROUND, app.THEME_FG],
-            ["BLANK", "asset/transparent.png", "00000000", app.THEME_FG],
+            ["GALAXY", Theme.GALAXY.MAIN_BG_SOURCE, Theme.GALAXY.MAIN_BACKGROUND, app.THEME_FG],
             ["BLANK", "asset/transparent.png", "00000000", app.THEME_FG],
             ["BLANK", "asset/transparent.png", "00000000", app.THEME_FG],
             ["BLANK", "asset/transparent.png", "00000000", app.THEME_FG],

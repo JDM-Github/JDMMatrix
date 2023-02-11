@@ -7,7 +7,7 @@
         "E",
         "F"
     ],
-    "CurrentTheme": "HELLOKITTY",
+    "CurrentTheme": "JDM",
     "CurrentFirst": "A",
     "CurrentSecond": "B",
     "ARows": 3,
@@ -40,7 +40,7 @@
         [
             "0",
             "0",
-            "0",
+            "`",
             "0",
             "0",
             "0",
@@ -759,8 +759,8 @@
     "ResultString": "",
     "ResultRows": 0,
     "ResultCols": 0,
-    "LastScreen": "Field",
-    "CurrentScreen": "Theme",
-    "GraphSaveCount": 21,
+    "LastScreen": "Main",
+    "CurrentScreen": "Main",
+    "GraphSaveCount": 27,
     "GraphMainPath": "C:\\Users\\numbe\\OneDrive\\Pictures\\MatrixCalculator\\Graph"
 }
