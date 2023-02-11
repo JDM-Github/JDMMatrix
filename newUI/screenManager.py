@@ -31,14 +31,11 @@ class SM(ScreenManager):
 
     def changeScreen(self, *_):
         self.old_Screen = self.current
-        self.transition = SlideTransition()
         if self.change_Screen == "Main":
             self.transition.direction = "right"
         elif self.change_Screen == "Field": self.parent.addField()
         elif self.change_Screen == "Theme": self.parent.addTheme()
-        elif self.change_Screen == "Graph":
-            self.transition = NoTransition()
-            self.parent.addGraph()
+        elif self.change_Screen == "Graph": self.parent.addGraph()
         self.current = self.change_Screen
 
 class MainScreenWidget(Widget):
