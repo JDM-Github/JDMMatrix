@@ -12,7 +12,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.graphics import Rectangle, Color, Line, RoundedRectangle
-from kivy.utils import get_color_from_hex as GetColor
+from kivy.utils import get_color_from_hex as GetColor, platform
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
 from kivy.uix.label import Label
@@ -61,8 +61,9 @@ class CustomFolderButton(CustomWidget):
 
 class CustomFileChooser(Widget):
     
-    def __init__(self, **kwargs):
+    def __init__(self, cusPath=None, **kwargs):
         super().__init__(**kwargs)
+        self.cusPath = cusPath
         self.selected : CustomFolderButton = None
         self.size = Window.size
         self.pos = (0, 0)
@@ -111,6 +112,7 @@ class CustomFileChooser(Widget):
         self.add_widget(self.scroll)
 
         self.fileChooser = MainFileChooser(self)
+        if self.cusPath: self.fileChooser.path = self.cusPath
         self.fileChooser.bind(files=self.displayAllButtonFiles)
     
     def closeFileChoooser(self):
@@ -458,7 +460,14 @@ class Graph(Widget):
     def createDir(self):
         self.fileChooserOpened = True
         if self.mainPath is None or not os.path.exists(self.mainPath):
-            self.add_widget(CustomFileChooser(size=Window.size))
+            if platform == "android":
+                from android.permissions import request_permissions, Permission
+                request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
+                                     Permission.READ_EXTERNAL_STORAGE])
+                from android.storage import primary_external_storage_path
+                SD_CARD = primary_external_storage_path()
+                self.add_widget(CustomFileChooser(SD_CARD, size=Window.size))                
+            else: self.add_widget(CustomFileChooser(size=Window.size))
         else: self.saveGraph()
 
     def de_Select_line(self):
