@@ -73,6 +73,8 @@ class MatrixCalculator(App):
         self.Matrixconfig["LastScreen"] = self.matrixCalc.sm.old_Screen
         self.Matrixconfig["CurrentScreen"] = self.matrixCalc.sm.current
         self.Matrixconfig["GraphSaveCount"] = self.graphSave
+        if hasattr(self.matrixCalc, "graph"):
+            self.Matrixconfig["Nodes"] = self.matrixCalc.graph.saveAllNodes()
         with open("config.json", "w") as f: json.dump(self.Matrixconfig, f, indent=4, separators=(',', ': '))
 
     def on_stop(self):

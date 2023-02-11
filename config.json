@@ -7,7 +7,7 @@
         "E",
         "F"
     ],
-    "CurrentTheme": "JDM",
+    "CurrentTheme": "ORIGINAL",
     "CurrentFirst": "A",
     "CurrentSecond": "B",
     "ARows": 3,
@@ -40,7 +40,7 @@
         [
             "0",
             "0",
-            "`",
+            "0",
             "0",
             "0",
             "0",
@@ -761,6 +761,7 @@
     "ResultCols": 0,
     "LastScreen": "Main",
     "CurrentScreen": "Main",
-    "GraphSaveCount": 27,
-    "GraphMainPath": "C:\\Users\\numbe\\OneDrive\\Pictures\\MatrixCalculator\\Graph"
+    "GraphSaveCount": 0,
+    "GraphMainPath": "",
+    "Nodes": []
 }

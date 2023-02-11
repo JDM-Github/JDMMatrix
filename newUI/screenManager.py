@@ -3,7 +3,7 @@ from kivy.core.window import Window
 
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
-from kivy.uix.screenmanager import ScreenManager, Screen, ScreenManagerException, NoTransition, SlideTransition
+from kivy.uix.screenmanager import ScreenManager, Screen, ScreenManagerException, FadeTransition, SlideTransition
 
 from kivy.utils import get_color_from_hex as GetColor
 from kivy.graphics import Color, Rectangle
@@ -23,25 +23,32 @@ class SM(ScreenManager):
         super().__init__(**kwargs)
         self.old_Screen = "Main"
         self.bind(change_Screen=self.changeScreen)
-        self.bind(current=self.checkScreen)
-
-    def checkScreen(self, *_):
-        if self.current == "Graph":
-            self.parent.graph.setAllCanvas()
 
     def changeScreen(self, *_):
+        if self.parent.ingraph is False:
+            self.transition = self.parent.Stransition
         self.old_Screen = self.current
         if self.change_Screen == "Main":
+            self.parent.ingraph = False
             self.transition.direction = "right"
-        elif self.change_Screen == "Field": self.parent.addField()
-        elif self.change_Screen == "Theme": self.parent.addTheme()
-        elif self.change_Screen == "Graph": self.parent.addGraph()
+        elif self.change_Screen == "Field":
+            self.parent.ingraph = False
+            self.parent.addField()
+        elif self.change_Screen == "Theme":
+            self.parent.ingraph = False
+            self.parent.addTheme()
+        elif self.change_Screen == "Graph":
+            self.transition = FadeTransition()
+            self.parent.ingraph = True
+            self.parent.addGraph()
         self.current = self.change_Screen
 
 class MainScreenWidget(Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.ingraph = False
+        self.Stransition = SlideTransition()
         self.size = Window.size
         with self.canvas:
             Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.MAIN_BACKGROUND))
@@ -77,12 +84,17 @@ class MainScreenWidget(Widget):
             self.graph = Graph()
             self.ScreenGraph.add_widget(self.graph)
             self.sm.add_widget(self.ScreenGraph)
+            self.graph.setAllCanvas()
+            self.graph.loadAllNodes()
+            return
+        self.graph.setAllCanvas()
 
     def allScreen(self):
         config = App.get_running_app().Matrixconfig
         current_Screen = config.get("CurrentScreen")
 
         self.sm = SM(size=Window.size)
+        self.sm.transition = self.Stransition 
         self.ScreenMainMenu = Screen(name="Main")
         self.MainMenu = MainMenu()
         self.ScreenMainMenu.add_widget(self.MainMenu)

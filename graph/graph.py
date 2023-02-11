@@ -16,7 +16,7 @@ from kivy.utils import get_color_from_hex as GetColor
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
 from kivy.uix.label import Label
-from kivy.properties import NumericProperty
+from kivy.properties import NumericProperty, BooleanProperty
 from kivy.uix.filechooser import FileChooserListView
 
 from src import CustomWidget
@@ -338,6 +338,7 @@ class CustomLab(Label):
 
 class Graph(Widget):
 
+    show_Number = BooleanProperty(True)
     cols = NumericProperty(100)
     rows = NumericProperty(100)
     cameraX = NumericProperty(0)
@@ -357,10 +358,12 @@ class Graph(Widget):
         self.line_selected : NodeLine = None
         self.stop_text : bool = False
         self.show_Coords : bool = False
+        self.show_Number : bool = True
         self.fileChooserOpened : bool = False
         self.minimum_size : int = dp(10)
         self.maximum_size : int = dp(100)
         self.mainPath = App.get_running_app().Matrixconfig.get("GraphMainPath")
+        self.bind(show_Number=lambda *_: self.updateCanvas())
 
     def allList(self):
         self.all_Line_ver : list[Line] = list()
@@ -379,6 +382,7 @@ class Graph(Widget):
         self.allButton.add_widget(deselect:=CustomButt(1, "DeSel", 'd'))
         self.allButton.add_widget(clearLine:=CustomButt(2, "Clear", 'd'))
         self.allButton.add_widget(showCoords:=CustomButt(3, "Coords", 'd'))
+        self.allButton.add_widget(showNumber:=CustomButt(4, "Number", 'd'))
 
         zoomIn.func_binder = lambda *_: self.zoom_in()
         zoomOut.func_binder = lambda *_: self.zoom_out()
@@ -388,6 +392,7 @@ class Graph(Widget):
         deselect.func_binder = lambda *_ : self.de_Select_line()
         clearLine.func_binder = lambda *_: self.removeAllNodes()
         showCoords.func_binder = lambda *_ : self.showAllCoords()
+        showNumber.func_binder = lambda *_ : setattr(self, "show_Number", not self.show_Number)
 
         self.grid = GridLayout(
             cols=2, rows=2, size=(Window.width/7*2, dp(50)),
@@ -409,13 +414,13 @@ class Graph(Widget):
         maxx = maxy = 5
         for node in self.all_nodes_line:
             if node.node1.position[0] > maxx:
-                maxx = node.node1.position[0] + 1
+                maxx = node.node1.position[0] + 2
             if node.node2.position[0] > maxx:
-                maxx = node.node2.position[0] + 1
+                maxx = node.node2.position[0] + 2
             if node.node1.position[1] > maxy:
-                maxy = node.node1.position[1] + 1
+                maxy = node.node1.position[1] + 2
             if node.node2.position[1] > maxy:
-                maxy = node.node2.position[1] + 1
+                maxy = node.node2.position[1] + 2
         self.pos = ((self.pos_[0]+(self.width_/2)) + self.cameraX - (maxx * self.blockPadding),
                     (self.pos_[1]+(self.height_/2)) + self.cameraY - (maxy * self.blockPadding))
         self.size = (((maxx * self.blockPadding) * 2), ((maxy * self.blockPadding) * 2))
@@ -425,7 +430,7 @@ class Graph(Widget):
         self.remove_widget(self.allButton)
         self.remove_widget(self.allStatsLabel)
         self.createDir()
-    
+
     def saveGraph(self):
         App.get_running_app().Matrixconfig["GraphMainPath"] = self.mainPath
         self.width_ = self.blockPadding*(self.cols*2+1)
@@ -511,18 +516,20 @@ class Graph(Widget):
         for i, node in enumerate(self.all_nodes_line):
             node.name_Label.text = chr(65 + i)
 
-    def addNodeLine(self):
+    def addNodeLine(self, pos1=(1, 1), pos2=(0, 0)):
         self.all_nodes_line.append(NodeLine())
         self.all_Nodes.add_widget(self.all_nodes_line[-1])
+        self.all_nodes_line[-1].node1.position = pos1
+        self.all_nodes_line[-1].node2.position = pos2
         self.all_nodes_line[-1].node1.setPosition()
         self.all_nodes_line[-1].node2.setPosition()
         if self.show_Coords:
             self.all_nodes_line[-1].node1.add_widget(self.all_nodes_line[-1].node1.label)
             self.all_nodes_line[-1].node2.add_widget(self.all_nodes_line[-1].node2.label)
-        
+
         for i, node in enumerate(self.all_nodes_line):
             node.name_Label.text = chr(65 + i)
-    
+
     def resetVariable(self):
         self.magnitude.text = "Magnitude: "
         self.components.text = "Components: "
@@ -540,6 +547,15 @@ class Graph(Widget):
         self.add_widget(self.all_Nodes)
         self.add_widget(self.allButton)
         self.add_widget(self.allStatsLabel)
+
+    def loadAllNodes(self):
+        config = App.get_running_app().Matrixconfig
+        allLoadNodes = config.get("Nodes")
+        if allLoadNodes:
+            for node in allLoadNodes: self.addNodeLine(*node)
+
+    def saveAllNodes(self):
+        return [[node.node1.position, node.node2.position] for node in self.all_nodes_line]
 
     def setAllCanvas(self, *_):
         self.width_ = self.blockPadding*(self.cols*2+1)
@@ -565,8 +581,9 @@ class Graph(Widget):
                     x, Window.height if allLine is False else ((self.cameraY + self.pos_[1]) + self.height_)]
                 if c != self.cols:
                     self.all_horizontal[c].size = (self.blockPadding, self.blockPadding)
-                    self.all_horizontal[c].pos = (self.cameraX + self.pos_[0] + self.blockPadding/2 + ((c-0.5)*self.blockPadding),
+                    self.all_horizontal[c].pos = ((self.cameraX + self.pos_[0] + self.blockPadding/2 + ((c-0.5)*self.blockPadding),
                          self.cameraY + self.pos_[1] + self.blockPadding/2 + ((self.rows-(0 if c+1 > self.cols else 1))*self.blockPadding))
+                    if self.show_Number else (0, -Window.height))
             elif x > Window.width: break 
         for r in range(startY-1 if allLine is False else 0, self.rows*2+1):
             if remove:
@@ -581,8 +598,9 @@ class Graph(Widget):
                     Window.width if allLine is False else ((self.cameraX + self.pos_[0]) + self.width_), y]
                 if r != self.rows:
                     self.all_vertical[r].size = (self.blockPadding, self.blockPadding)
-                    self.all_vertical[r].pos = (self.cameraX + self.pos_[0] + self.blockPadding/2 + ((self.cols-(1 if r+1 > self.rows else 0))*self.blockPadding),
+                    self.all_vertical[r].pos = ((self.cameraX + self.pos_[0] + self.blockPadding/2 + ((self.cols-(1 if r+1 > self.rows else 0))*self.blockPadding),
                        self.cameraY + self.pos_[1] + self.blockPadding/2 + ((r-0.5)*self.blockPadding))
+                    if self.show_Number else (0, -Window.height))
             elif y > Window.height: break
 
     def removeAll(self):
