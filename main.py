@@ -11,7 +11,7 @@ from kivy.uix.widget import Widget
 from kivy.core.text import LabelBase
 
 LabelBase.register(
-    fn_regular="asset/consolas.ttf",
+    fn_regular="asset/Consolas.ttf",
     name="consolas")
 
 if kivy.platform != "android": 
