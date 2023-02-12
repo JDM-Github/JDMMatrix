@@ -7,14 +7,14 @@
         "E",
         "F"
     ],
-    "CurrentTheme": "ORIGINAL",
+    "CurrentTheme": "JDM",
     "CurrentFirst": "A",
     "CurrentSecond": "B",
-    "ARows": 3,
-    "ACols": 3,
+    "ARows": 1,
+    "ACols": 2,
     "AEValue": [
         [
-            "0",
+            "1",
             "0",
             "0",
             "0",
@@ -26,7 +26,7 @@
             "0"
         ],
         [
-            "0",
+            "3",
             "0",
             "0",
             "0",
@@ -134,12 +134,12 @@
             "0"
         ]
     ],
-    "BRows": 3,
-    "BCols": 3,
+    "BRows": 2,
+    "BCols": 1,
     "BEValue": [
         [
-            "0",
-            "0",
+            "6",
+            "7",
             "0",
             "0",
             "0",
@@ -150,7 +150,7 @@
             "0"
         ],
         [
-            "0",
+            "2",
             "0",
             "0",
             "0",
@@ -754,14 +754,49 @@
             "0"
         ]
     ],
-    "ResultList": [],
-    "CResultString": "",
-    "ResultString": "",
-    "ResultRows": 0,
-    "ResultCols": 0,
+    "ResultList": [
+        6
+    ],
+    "CResultString": "Matrix A      Matrix B\n| 1 | 3 | <-> | 6 | \n          <-> | 7 | \n\nAnswer: Multiplication of Matrix A and Matrix B\n| 6 | \n\nStep By Step:\n| ((1 * 6)) | \n",
+    "ResultString": "Matrix A      Matrix B\n| 1 | 3 | <-> | 6 | \n          <-> | 7 | \n\nAnswer: Multiplication of Matrix A and Matrix B\n| 6 | \n\nStep By Step:\n| ((1 * 6)) | \n",
+    "ResultRows": 1,
+    "ResultCols": 1,
     "LastScreen": "Main",
     "CurrentScreen": "Main",
-    "GraphSaveCount": 0,
-    "GraphMainPath": "",
-    "Nodes": []
+    "GraphSaveCount": 1,
+    "GraphMainPath": "C:\\Users\\numbe\\OneDrive\\Pictures\\MatrixCalculator\\Graph",
+    "Nodes": [
+        [
+            [
+                -1.6,
+                -3.2
+            ],
+            [
+                1.3,
+                -0.6
+            ]
+        ],
+        [
+            [
+                -3.8,
+                2.2
+            ],
+            [
+                1.9,
+                0.6
+            ]
+        ],
+        [
+            [
+                1.4,
+                3.3
+            ],
+            [
+                0,
+                0
+            ]
+        ]
+    ],
+    "CameraX": 85.76303000457052,
+    "CameraY": -7.729435794464746
 }

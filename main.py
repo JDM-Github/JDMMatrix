@@ -75,6 +75,8 @@ class MatrixCalculator(App):
         self.Matrixconfig["GraphSaveCount"] = self.graphSave
         if hasattr(self.matrixCalc, "graph"):
             self.Matrixconfig["Nodes"] = self.matrixCalc.graph.saveAllNodes()
+            self.Matrixconfig["CameraX"] = self.matrixCalc.graph.cameraX
+            self.Matrixconfig["CameraY"] = self.matrixCalc.graph.cameraY
         with open("config.json", "w") as f: json.dump(self.Matrixconfig, f, indent=4, separators=(',', ': '))
 
     def on_stop(self):

@@ -19,7 +19,7 @@ from kivy.uix.label import Label
 from kivy.properties import NumericProperty, BooleanProperty
 from kivy.uix.filechooser import FileChooserListView
 
-from src import CustomWidget
+from src import CustomWidget, displayTitle
 
 class MainFileChooser(FileChooserListView):
     
@@ -70,19 +70,8 @@ class CustomFileChooser(Widget):
         self.show = True
         self.navFileChooser()
     
-    def displayTitle(self):
-        self.title = Label(
-            font_size="32sp", font_name="consolas", color=GetColor(App.get_running_app().CT.CurrentTheme.MENU_BUTTON_COLOR),
-            size=(Window.width, Window.height*0.1),
-            pos=(0, Window.height*0.9), text="JDM FileChooser")
-
-        with self.canvas:
-            Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.MENU_COLOR))
-            Rectangle(size=self.title.size, pos=self.title.pos)
-        self.add_widget(self.title)
-    
     def navFileChooser(self):
-        self.displayTitle()
+        displayTitle(self, "JDM FileChooser")
         self.allButtons : list[CustomFolderButton] = list()
         self.grid = GridLayout(size_hint_y=None, cols=1, padding="10dp", spacing="5dp")
         self.scroll = ScrollView(size=(Window.width*0.9, Window.height*0.76),
@@ -122,7 +111,7 @@ class CustomFileChooser(Widget):
 
     def submitLocation(self):
         parent = self.parent
-        self.parent.mainPath = self.selected.path
+        self.parent.mainPath = self.fileChooser.path if not self.selected else self.selected.path 
         self.parent.remove_widget(self)
         parent.saveGraph()
 
@@ -143,14 +132,15 @@ class CustomFileChooser(Widget):
         else: self.show = False
 
 class Nodes(Widget):
-    
-    def __init__(self, pos, node, **kwargs):
+
+    def __init__(self, pos, node, invisible, **kwargs):
         super().__init__(**kwargs)
+        self.invisible = invisible
         self.node = node
         self.position = pos
         self.size = (dp(15), dp(15))
         self.displayLabelPos()
-    
+
     def displayLabelPos(self):
         self.label = Label(
             color=GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_TEXT), text=str(self.position),
@@ -158,7 +148,7 @@ class Nodes(Widget):
             font_name = "consolas"
         )
         self.bind(pos=self.changePos)
-    
+
     def changePos(self, *_):
         self.label.pos = self.x, self.y-dp(20)
     
@@ -172,6 +162,7 @@ class Nodes(Widget):
             if self.parent.changeMode: self.parent.changeAngleLabel()
 
     def on_touch_down(self, touch):
+        if self.invisible: return super().on_touch_down(touch)
         if self.parent.parent.parent.fileChooserOpened is False:
             if self.collide_point(*touch.pos):      
                 if self.parent.parent.parent.grabbing is None:
@@ -191,21 +182,33 @@ class Nodes(Widget):
                     self.parent.parent.parent.line_selected = self.parent
         return super().on_touch_down(touch)
 
+    def updateBind(self):
+        parent = self.parent.parent.parent
+        for index in range(len(parent.all_nodes_line_invisible)):
+            parent.updateBinderInvisibleFirst(index)
+            parent.updateBinderInvisibleSecond(index)
+            parent.updateBinderInvisibleThird(index)
+            parent.updateBinderInvisibleFouth(index)
+
     def on_touch_move(self, touch):
+        if self.invisible: return super().on_touch_move(touch)
         parent = self.parent.parent.parent
         if parent.grabbing is self:
             self.position = ((self.old_X*parent.blockPadding + (touch.x - self.grabX)) / parent.blockPadding,
                              (self.old_Y*parent.blockPadding + (touch.y - self.grabY)) / parent.blockPadding)
             self.setPosition()
+            self.updateBind()
             self.parent.parent.parent.setGridValue(self.parent)
         return super().on_touch_move(touch)
 
     def on_touch_up(self, touch):
+        if self.invisible: return super().on_touch_up(touch)
         if self.parent.parent.parent.grabbing is self:
             self.parent.parent.parent.grabbing = None
             self.position = (round(round(self.position[0]*100, 2)/100, 1),
                              round(round(self.position[1]*100, 2)/100, 1))
             self.setPosition()
+            self.updateBind()
             self.parent.parent.parent.setGridValue(self.parent)
         return super().on_touch_up(touch)
 
@@ -219,19 +222,20 @@ class Arrow(Scatter):
         self.auto_bring_to_front = False
         self.img = Image(
             color=GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_NACTIVE),
-            size=(dp(25), dp(20)), pos=(dp(18)*-0.2, dp(10)*-0.2),
+            size=(dp(25), dp(20)), pos=(dp(18)*-0.02, dp(10)*-0.02),
             source="asset/triangle.png", opacity=1
         )
         self.add_widget(self.img)
 
 class NodeLine(Widget):
     
-    def __init__(self, **kwargs):
+    def __init__(self, invisible=False, **kwargs):
         super().__init__(**kwargs)
+        self.invisible = invisible
         self.angle : int = 0
         self.changeMode = True
-        self.node1 = Nodes((1, 1), 1)
-        self.node2 = Nodes((0, 0), 2)
+        self.node1 = Nodes((1, 1), 1, invisible)
+        self.node2 = Nodes((0, 0), 2, invisible)
         self.arrow = Arrow(self.node1.pos)
         self.add_widget(self.node1)
         self.add_widget(self.node2)
@@ -241,11 +245,12 @@ class NodeLine(Widget):
         self.changeLine()
     
     def displayLineName(self):
-        self.name_Label = Label(
-            font_size=dp(20),
-            font_name="consolas", size=(dp(30), dp(30)),
-            color=GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_TEXT))
-        self.add_widget(self.name_Label)
+        if self.invisible is False:
+            self.name_Label = Label(
+                font_size=dp(20),
+                font_name="consolas", size=(dp(30), dp(30)),
+                color=GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_TEXT))
+            self.add_widget(self.name_Label)
 
     def getSlope(self, x1, x2, y1, y2):
         dx = x2 - x1
@@ -265,16 +270,19 @@ class NodeLine(Widget):
     def displayLine(self):
         with self.canvas:
             self.color = Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_NACTIVE), a=0.5)
-            self.line = Line(width=dp(2))
+            self.line = Line(width=dp(2) if self.invisible is False else dp(1.5))
 
     def changeLine(self):
         self.line.points=[self.node1.x+(self.node1.width/2), self.node1.y+(self.node1.height/2),
             self.node2.x+(self.node2.width/2), self.node2.y+(self.node2.height/2)]
-        self.name_Label.pos = ((self.node1.x+self.node2.x)/2 - dp(15), (self.node1.y+self.node2.y)/2 - dp(15))
+        if self.invisible is False:
+            self.name_Label.pos = ((self.node1.x+self.node2.x)/2 - dp(15), (self.node1.y+self.node2.y)/2 - dp(15))
         self.arrow.pos = self.node1.x+(self.node1.width/2), self.node1.y+(self.node1.height/2)
-    
+
     def changeAngleLabel(self):
-        if self.parent: self.parent.parent.updateAllStats()
+        if self.parent:
+            if self.parent.parent.line_selected is self:
+                self.parent.parent.updateAllStats()
         self.arrow.rotation = self.getSlope(self.node1.x, self.node2.x, self.node1.y, self.node2.y)
 
 class CustomTextInput(TextInput):
@@ -338,6 +346,151 @@ class CustomLab(Label):
         self.pos = (dp(10), (Window.height-dp(70) - dp(20)*num))
         self.size = (Window.width, dp(20))
 
+class BindInterfaceButton(CustomWidget):
+    
+    def __init__(self, name: str, index : int, **kwargs):
+        self.index = index
+        super().__init__((0, 0), (100, Window.height*0.05 if Window.width < Window.height else Window.height*0.1), name, True, **kwargs)
+        self.selector = True
+        self.size_hint_y = None
+        self.bind(size=self.SizebindCanvas)
+
+    def functions(self):
+        wid = self.parent.parent.parent.parent.selected
+        if wid is self:
+            wid.color2.rgb = GetColor(wid.buttonColor)
+            self.parent.parent.parent.parent.selectVector()
+        else:
+            if wid: wid.color2.rgb = GetColor(wid.buttonColor)
+            self.parent.parent.parent.parent.selected = self
+
+class BindInterface(Widget):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.size = ((Window.width*0.9, Window.height*0.3) if Window.width < Window.height else 
+                     (Window.height*0.9, Window.width*0.3))
+        self.pos = (Window.width*0.5-self.width/2,
+                    Window.height*0.88-self.height)
+        self.selected = None
+        self.AccessingVec = None
+        self.gridChooser = False
+        self.allCustomButt = Widget()
+        self.gridWidget = Widget()
+        self.currentAccess = 0
+        self.allBinder = [(None, None, None, None)]
+        with self.allCustomButt.canvas:
+            Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.RESULT_BOX), a=0.8)
+            RoundedRectangle(size=self.size, pos=self.pos, radius=[10, 10, 10, 10])
+        displayTitle(self, "JDM Binder")
+        self.allButtons()
+
+    def allButtons(self):
+        self.first = CustomWidget(
+            (self.x + dp(10), self.top-(self.height/4)+dp(5)),
+            (self.width*0.6, self.height/4-(dp(10))),
+            "Select First Vector", True)
+        self.nextVec = CustomWidget(
+            (self.x + dp(20)+self.width*0.6, self.top-(self.height/4)+dp(5)),
+            (self.width*0.4-dp(30), self.height/4-(dp(10))),
+            "Next", True)
+        self.second = CustomWidget(
+            (self.x + dp(10), self.top-(self.height/4*2)+dp(5)),
+            (self.width*0.6, self.height/4-(dp(10))),
+            "Select Second Vector", True)
+        self.prevVec = CustomWidget(
+            (self.x + dp(20)+self.width*0.6, self.top-(self.height/4*2)+dp(5)),
+            (self.width*0.4-dp(30), self.height/4-(dp(10))),
+            "Previous", True)
+        self.addition = CustomWidget(
+            (self.x + dp(10), self.top-(self.height/4*3)+dp(5)),
+            (self.width-dp(20), self.height/4-(dp(10))),
+            "Addition", True)
+        self.subtraction = CustomWidget(
+            (self.x + dp(10), self.top-(self.height/4*4)+dp(5)),
+            (self.width-dp(20), self.height/4-(dp(10))),
+            "Subtraction", True)
+
+        self.allCustomButt.add_widget(self.first)
+        self.first.func_binder = lambda *_: self.displayGrid("F")
+        self.allCustomButt.add_widget(self.nextVec)
+
+        self.allCustomButt.add_widget(self.second)
+        self.second.func_binder = lambda *_: self.displayGrid("S")
+        self.allCustomButt.add_widget(self.prevVec)
+
+        self.addition.toggleMode = True
+        self.allCustomButt.add_widget(self.addition)
+        self.subtraction.toggleMode = True
+        self.allCustomButt.add_widget(self.subtraction)
+        self.add_widget(self.allCustomButt)
+
+    def displayGrid(self, access):
+        self.AccessingVec = access
+        self.remove_widget(self.allCustomButt)
+        self.remove_widget(self.gridWidget)
+        self.gridChooser = True
+
+        if not hasattr(self, "grid"):
+            self.allButtons : list[CustomFolderButton] = list()
+            self.grid = GridLayout(size_hint_y=None, cols=1, padding="10dp", spacing="5dp")
+            self.scroll = ScrollView(size=(Window.width*0.9, Window.height*0.76),
+                                     pos=(Window.width*0.05, Window.height*0.12))
+            self.grid.bind(minimum_height=self.grid.setter('height'))
+            with self.gridWidget.canvas:
+                Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.RESULT_BOX), a=0.8)
+                RoundedRectangle(size=self.scroll.size, pos=self.scroll.pos, radius=[10, 10, 10, 10])
+            self.submitButton = CustomWidget(
+                size=((Window.width * 0.4, Window.height*0.05) if Window.width < Window.height else
+                    (Window.width * 0.38, Window.height*0.08)),
+                pos=(Window.width*0.09, ((Window.height - ((Window.height*0.2)*3)) - (Window.height*0.01) - ((((Window.height*0.2) / 4) * 1.5) * (4+1)) )),
+                name="Select Vector", autoCall=True
+            )
+            self.submitButton.func_binder = lambda *_: self.selectVector()
+            self.closeButton = CustomWidget(
+                size=((Window.width * 0.4, Window.height*0.05) if Window.width < Window.height else
+                    (Window.width * 0.38, Window.height*0.08)),
+                pos=(Window.width*0.51, ((Window.height - ((Window.height*0.2)*3)) - (Window.height*0.01) - ((((Window.height*0.2) / 4) * 1.5) * (4+1)) )),
+                name="Close", autoCall=True
+            )
+            self.closeButton.func_binder = lambda *_: self.closeVectorList()
+
+            self.gridWidget.add_widget(self.submitButton)
+            self.gridWidget.add_widget(self.closeButton)        
+            self.scroll.add_widget(self.grid)
+            self.gridWidget.add_widget(self.scroll)
+        self.grid.clear_widgets()
+        self.displayAllButton()
+        self.add_widget(self.gridWidget)
+
+    def displayAllButton(self):
+        for i, node in enumerate(self.parent.all_nodes_line):
+            self.grid.add_widget(BindInterfaceButton(node.name_Label.text, i))
+
+    def selectVector(self):
+        if self.selected:
+            if self.AccessingVec == 'F':
+                if self.selected.name == self.second.mainLabel.text: return
+                self.first.mainLabel.text = self.selected.name
+                self.allBinder[self.currentAccess] = (self.selected.index, *self.allBinder[self.currentAccess][1:])
+            elif self.AccessingVec == 'S':
+                if self.selected.name == self.first.mainLabel.text: return
+                self.second.mainLabel.text = self.selected.name
+                self.allBinder[self.currentAccess] = (self.allBinder[self.currentAccess][0], self.selected.index, *self.allBinder[self.currentAccess][2:])
+            self.closeVectorList()
+
+    def closeVectorList(self):
+        self.selected = None
+        self.gridChooser = False
+        self.AccessingVec = None
+        self.remove_widget(self.gridWidget)
+        self.add_widget(self.allCustomButt)
+
+    def on_touch_down(self, touch):
+        if not self.collide_point(*touch.pos) and self.gridChooser is False:
+            self.parent.openBinder()
+        return super().on_touch_down(touch)
+
 class Graph(Widget):
 
     show_Number = BooleanProperty(True)
@@ -362,15 +515,21 @@ class Graph(Widget):
         self.show_Coords : bool = False
         self.show_Number : bool = True
         self.fileChooserOpened : bool = False
+        self.alwaysAskLocation : bool = True
         self.minimum_size : int = dp(10)
         self.maximum_size : int = dp(100)
-        self.mainPath = App.get_running_app().Matrixconfig.get("GraphMainPath")
+        
+        config = App.get_running_app().Matrixconfig
+        self.cameraX = config.get("CameraX") if config.get("CameraX") else 0
+        self.cameraY = config.get("CameraY") if config.get("CameraY") else 0
+        self.mainPath = config.get("GraphMainPath")
         self.bind(show_Number=lambda *_: self.updateCanvas())
 
     def allList(self):
         self.all_Line_ver : list[Line] = list()
         self.all_Line_hor : list[Line] = list()
         self.all_nodes_line : list[NodeLine] = list()
+        self.all_nodes_line_invisible : list[NodeLine, NodeLine] = list()
         self.all_horizontal : Label = list()
         self.all_vertical : Label = list()
 
@@ -385,6 +544,8 @@ class Graph(Widget):
         self.allButton.add_widget(clearLine:=CustomButt(2, "Clear", 'd'))
         self.allButton.add_widget(showCoords:=CustomButt(3, "Coords", 'd'))
         self.allButton.add_widget(showNumber:=CustomButt(4, "Number", 'd'))
+        self.bindVector = CustomButt(5, "Bind", 'd')
+        self.allButton.add_widget(self.bindVector)
 
         zoomIn.func_binder = lambda *_: self.zoom_in()
         zoomOut.func_binder = lambda *_: self.zoom_out()
@@ -395,6 +556,9 @@ class Graph(Widget):
         clearLine.func_binder = lambda *_: self.removeAllNodes()
         showCoords.func_binder = lambda *_ : self.showAllCoords()
         showNumber.func_binder = lambda *_ : setattr(self, "show_Number", not self.show_Number)
+
+        self.binderVec = BindInterface()
+        self.bindVector.func_binder = lambda *_ : self.openBinder()
 
         self.grid = GridLayout(
             cols=2, rows=2, size=(Window.width/7*2, dp(50)),
@@ -410,6 +574,17 @@ class Graph(Widget):
         self.grid.add_widget(CustomTextInput("N2-X", 2))
         self.grid.add_widget(CustomTextInput("N2-Y", 3))
         self.allButton.add_widget(self.grid)
+
+    def openBinder(self):
+        if self.binderVec not in self.children:
+            self.de_Select_line()
+            self.fileChooserOpened = True
+            self.remove_widget(self.allButton)
+            self.remove_widget(self.allStatsLabel)
+            self.add_widget(self.binderVec)
+        else:
+            self.remove_widget(self.binderVec)
+            self.re_addAll()
 
     def setSaveWindowSize(self):
         self.saveWin = Widget()
@@ -459,7 +634,7 @@ class Graph(Widget):
 
     def createDir(self):
         self.fileChooserOpened = True
-        if self.mainPath is None or not os.path.exists(self.mainPath):
+        if self.mainPath is None or not os.path.exists(self.mainPath) or self.alwaysAskLocation:
             if platform == "android":
                 from android.permissions import request_permissions, Permission
                 request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
@@ -518,12 +693,27 @@ class Graph(Widget):
 
     def deleteNodeLine(self):
         if self.line_selected:
+            index = self.all_nodes_line.index(self.line_selected)
+            for i in range(len(self.binderVec.allBinder)):
+                if self.binderVec.allBinder[i][0] == index: self.binderVec.allBinder[i] = (None, None, None, None)
+                if self.binderVec.allBinder[i][1] == index: self.binderVec.allBinder[i] = (None, None, None, None)
+                if self.binderVec.allBinder[i][0] is not None and self.binderVec.allBinder[i][0] > index:
+                    self.binderVec.allBinder[i] = (self.binderVec.allBinder[i][0]-1, *self.binderVec.allBinder[i][1:])
+                if self.binderVec.allBinder[i][1] is not None and self.binderVec.allBinder[i][1] > index:
+                    self.binderVec.allBinder[i] = (self.binderVec.allBinder[i][0], self.binderVec.allBinder[i][1]-1, *self.binderVec.allBinder[i][2:])
+
             self.all_nodes_line.remove(self.line_selected)
             self.all_Nodes.remove_widget(self.line_selected)
             self.resetVariable()
 
         for i, node in enumerate(self.all_nodes_line):
             node.name_Label.text = chr(65 + i)
+        self.setAllNodes()
+
+        self.binderVec.first.mainLabel.text = ("Select First Vector" if self.binderVec.allBinder[self.binderVec.currentAccess][0] is None else
+            self.all_nodes_line[self.binderVec.allBinder[self.binderVec.currentAccess][0]].name_Label.text)
+        self.binderVec.second.mainLabel.text = ("Select Second Vector" if self.binderVec.allBinder[self.binderVec.currentAccess][1] is None else
+            self.all_nodes_line[self.binderVec.allBinder[self.binderVec.currentAccess][1]].name_Label.text)
 
     def addNodeLine(self, pos1=(1, 1), pos2=(0, 0)):
         self.all_nodes_line.append(NodeLine())
@@ -538,6 +728,109 @@ class Graph(Widget):
 
         for i, node in enumerate(self.all_nodes_line):
             node.name_Label.text = chr(65 + i)
+    
+    def addInvisibleNodeLine(self):
+        self.all_nodes_line_invisible.append(
+            [NodeLine(invisible=True), NodeLine(invisible=True),
+             NodeLine(invisible=True), NodeLine(invisible=True)])
+        self.all_Nodes_Invi.add_widget(self.all_nodes_line_invisible[-1][0])
+        self.all_nodes_line_invisible[-1][0].color.rgb = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_NUM_HOR)
+        self.all_nodes_line_invisible[-1][0].arrow.img.color = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_NUM_HOR)
+        self.all_Nodes_Invi.add_widget(self.all_nodes_line_invisible[-1][1])
+        self.all_nodes_line_invisible[-1][1].color.rgb = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_NUM_HOR)
+        self.all_nodes_line_invisible[-1][1].arrow.img.color = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_NUM_HOR)
+        
+        self.all_Nodes_Invi.add_widget(self.all_nodes_line_invisible[-1][2])
+        self.all_nodes_line_invisible[-1][2].color.rgb = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_NUM_VERT)
+        self.all_nodes_line_invisible[-1][2].arrow.img.color = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_NUM_VERT)
+        self.all_Nodes_Invi.add_widget(self.all_nodes_line_invisible[-1][3])
+        self.all_nodes_line_invisible[-1][3].color.rgb = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_NUM_VERT)
+        self.all_nodes_line_invisible[-1][3].arrow.img.color = GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_NUM_VERT)
+        
+
+    def updateBinderInvisibleFirst(self, index):
+        if (self.binderVec.allBinder[index][0] is None
+         or self.binderVec.allBinder[index][1] is None
+         or self.binderVec.addition.activate is False):
+            self.all_nodes_line_invisible[index][0].node1.position = (-1000, -1000)
+            self.all_nodes_line_invisible[index][0].node2.position = (-1000, -1000)
+            self.all_nodes_line_invisible[index][0].node1.setPosition()
+            self.all_nodes_line_invisible[index][0].node2.setPosition()
+            return
+        access = self.binderVec.allBinder[index]
+        x1, y1 = self.all_nodes_line[access[1]].node1.position
+        x2, y2 = self.all_nodes_line[access[1]].node2.position
+        components = [round(x1 - x2, 1), round(y1 - y2, 1)]
+        self.all_nodes_line_invisible[index][0].node1.position = (
+            self.all_nodes_line[access[0]].node1.position[0] + components[0],
+            self.all_nodes_line[access[0]].node1.position[1] + components[1]
+        )
+        self.all_nodes_line_invisible[index][0].node2.position = self.all_nodes_line[access[0]].node1.position
+        self.all_nodes_line_invisible[index][0].node1.setPosition()
+        self.all_nodes_line_invisible[index][0].node2.setPosition()
+
+    def updateBinderInvisibleSecond(self, index):
+        if (self.binderVec.allBinder[index][0] is None
+         or self.binderVec.allBinder[index][1] is None
+         or self.binderVec.addition.activate is False):
+            self.all_nodes_line_invisible[index][1].node1.position = (-1000, -1000)
+            self.all_nodes_line_invisible[index][1].node2.position = (-1000, -1000)
+            self.all_nodes_line_invisible[index][1].node1.setPosition()
+            self.all_nodes_line_invisible[index][1].node2.setPosition()
+            return
+        access = self.binderVec.allBinder[index]
+        x1, y1 = self.all_nodes_line[access[0]].node1.position
+        x2, y2 = self.all_nodes_line[access[0]].node2.position
+        components = [round(x1 - x2, 1), round(y1 - y2, 1)]
+        self.all_nodes_line_invisible[index][1].node1.position = (
+            self.all_nodes_line[access[1]].node1.position[0] + components[0],
+            self.all_nodes_line[access[1]].node1.position[1] + components[1]
+        )
+        self.all_nodes_line_invisible[index][1].node2.position = self.all_nodes_line[access[1]].node1.position
+        self.all_nodes_line_invisible[index][1].node1.setPosition()
+        self.all_nodes_line_invisible[index][1].node2.setPosition()
+        
+    def updateBinderInvisibleThird(self, index):
+        if (self.binderVec.allBinder[index][0] is None
+         or self.binderVec.allBinder[index][1] is None
+         or self.binderVec.subtraction.activate is False):
+            self.all_nodes_line_invisible[index][2].node1.position = (-1000, -1000)
+            self.all_nodes_line_invisible[index][2].node2.position = (-1000, -1000)
+            self.all_nodes_line_invisible[index][2].node1.setPosition()
+            self.all_nodes_line_invisible[index][2].node2.setPosition()
+            return
+        access = self.binderVec.allBinder[index]
+        x1, y1 = self.all_nodes_line[access[1]].node1.position
+        x2, y2 = self.all_nodes_line[access[1]].node2.position
+        components = [round(x1 - x2, 1), round(y1 - y2, 1)]
+        self.all_nodes_line_invisible[index][2].node1.position = (
+            self.all_nodes_line[access[0]].node1.position[0] - components[0],
+            self.all_nodes_line[access[0]].node1.position[1] - components[1]
+        )
+        self.all_nodes_line_invisible[index][2].node2.position = self.all_nodes_line[access[0]].node1.position
+        self.all_nodes_line_invisible[index][2].node1.setPosition()
+        self.all_nodes_line_invisible[index][2].node2.setPosition()
+
+    def updateBinderInvisibleFouth(self, index):
+        if (self.binderVec.allBinder[index][0] is None
+         or self.binderVec.allBinder[index][1] is None
+         or self.binderVec.subtraction.activate is False):
+            self.all_nodes_line_invisible[index][3].node1.position = (-1000, -1000)
+            self.all_nodes_line_invisible[index][3].node2.position = (-1000, -1000)
+            self.all_nodes_line_invisible[index][3].node1.setPosition()
+            self.all_nodes_line_invisible[index][3].node2.setPosition()
+            return
+        access = self.binderVec.allBinder[index]
+        x1, y1 = self.all_nodes_line[access[0]].node1.position
+        x2, y2 = self.all_nodes_line[access[0]].node2.position
+        components = [round(x1 - x2, 1), round(y1 - y2, 1)]
+        self.all_nodes_line_invisible[index][3].node1.position = (
+            self.all_nodes_line[access[1]].node1.position[0] - components[0],
+            self.all_nodes_line[access[1]].node1.position[1] - components[1]
+        )
+        self.all_nodes_line_invisible[index][3].node2.position = self.all_nodes_line[access[1]].node1.position
+        self.all_nodes_line_invisible[index][3].node1.setPosition()
+        self.all_nodes_line_invisible[index][3].node2.setPosition()
 
     def resetVariable(self):
         self.magnitude.text = "Magnitude: "
@@ -549,11 +842,14 @@ class Graph(Widget):
     def displayAll(self):
         self.displayLabel()
         self.all_Nodes = Widget()
+        self.all_Nodes_Invi = Widget()
+        self.addInvisibleNodeLine()
 
         self.displayGraph()
         self.displayLine()
         self.add_widget(self.all_Label)
         self.add_widget(self.all_Nodes)
+        self.add_widget(self.all_Nodes_Invi)
         self.add_widget(self.allButton)
         self.add_widget(self.allStatsLabel)
 
@@ -617,8 +913,14 @@ class Graph(Widget):
 
     def removeAllNodes(self):
         self.all_nodes_line.clear()
+        for i in range(len(self.binderVec.allBinder)):
+            self.binderVec.allBinder[i] = (None, None)
         self.all_Nodes.clear_widgets()
         self.resetVariable()
+        self.setAllNodes()
+        
+        self.binderVec.first.mainLabel.text = "Select First Vector"
+        self.binderVec.second.mainLabel.text = "Select Second Vector"
 
     def zoom_out(self):
         if self.blockPadding * 0.9 > self.minimum_size:
@@ -664,6 +966,11 @@ class Graph(Widget):
 
     def setAllNodes(self):
         for node in self.all_nodes_line: node.update2Nodeposition()
+        for index in range(len(self.all_nodes_line_invisible)):
+            self.updateBinderInvisibleFirst(index)
+            self.updateBinderInvisibleSecond(index)
+            self.updateBinderInvisibleThird(index)
+            self.updateBinderInvisibleFouth(index)
 
     def displayLine(self):
         with self.canvas:

@@ -1,5 +1,6 @@
 from kivy.app import App
-from kivy.graphics import RoundedRectangle, Color
+from kivy.core.window import Window
+from kivy.graphics import RoundedRectangle, Color, Rectangle
 from kivy.utils import get_color_from_hex as GetColor
 from configuration import soundClick
 from kivy.uix.label import Label
@@ -19,6 +20,16 @@ def setCanvas2(widget: Widget, color1: str, radius : list = [10, 10, 10, 10]):
         widget.color1 = Color(rgb=GetColor(color1))
         widget.rect1 = RoundedRectangle( radius=radius, size=widget.size, pos=widget.pos )
 
+def displayTitle(widget: Widget, text: str):
+    widget.title = Label(
+        font_size="32sp", font_name="consolas", color=GetColor(App.get_running_app().CT.CurrentTheme.MENU_BUTTON_COLOR),
+        size=(Window.width, Window.height*0.1),
+        pos=(0, Window.height*0.9), text=text)
+    with widget.canvas:
+        Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.MENU_COLOR))
+        Rectangle(size=widget.title.size, pos=widget.title.pos)
+    widget.add_widget(widget.title)
+
 class CustomLabel(Label):
     
     def __init__(self, name: str, Color: str, size: list[int, int], pos: list[int, int], **kwargs):
@@ -35,6 +46,8 @@ class CustomWidget(Widget):
     def __init__(self, pos: list[int, int], size: list[int, int], name: str, autoCall: bool = True, **kwargs):
         super().__init__(**kwargs)
         self.selector = False
+        self.toggleMode = False
+        self.activate = False
         self.func_binder = lambda: None
         self.clicked = False
         self.name = name
@@ -62,7 +75,14 @@ class CustomWidget(Widget):
         setCanvas(self, self.buttonLine, self.buttonColor, Radius, Source)
         self.add_widget(self.mainLabel)
     
-    def cfunctions(self): self.color2.rgb = GetColor(self.buttonPressed)
+    def cfunctions(self):
+        if self.toggleMode:
+            if self.activate:
+                self.activate = False
+                self.color2.rgb = GetColor(self.buttonColor)
+                return
+            self.activate = True
+        self.color2.rgb = GetColor(self.buttonPressed)
     def functions(self): ...
 
     def bindCanvas(self, *_):
@@ -87,6 +107,6 @@ class CustomWidget(Widget):
             self.functions()
             self.func_binder()
             self.clicked = False
-            if self.selector is False:
+            if self.selector is False and self.toggleMode is False:
                 if hasattr(self, "color2"): self.color2.rgb = GetColor(self.buttonColor)
         return super().on_touch_up(touch)
