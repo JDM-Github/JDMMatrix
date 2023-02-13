@@ -636,9 +636,6 @@ class Graph(Widget):
         self.fileChooserOpened = True
         if self.mainPath is None or not os.path.exists(self.mainPath) or self.alwaysAskLocation:
             if platform == "android":
-                from android.permissions import request_permissions, Permission
-                request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
-                                     Permission.READ_EXTERNAL_STORAGE])
                 from android.storage import primary_external_storage_path
                 SD_CARD = primary_external_storage_path()
                 self.add_widget(CustomFileChooser(SD_CARD, size=Window.size))                
