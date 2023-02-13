@@ -759,11 +759,22 @@
     "ResultString": "",
     "ResultRows": 0,
     "ResultCols": 0,
-    "LastScreen": "Theme",
+    "LastScreen": "Main",
     "CurrentScreen": "Main",
-    "GraphSaveCount": 1,
+    "GraphSaveCount": 3,
     "GraphMainPath": "C:\\Users\\numbe\\OneDrive\\Pictures\\MatrixCalculator\\Graph",
-    "Nodes": [],
-    "CameraX": -49.91771808136639,
-    "CameraY": -123.10548881836587
+    "Nodes": [
+        [
+            [
+                2.5,
+                10.9
+            ],
+            [
+                0.0,
+                -0.0
+            ]
+        ]
+    ],
+    "CameraX": -126.91771808136642,
+    "CameraY": -376.1054888183661
 }

@@ -4,6 +4,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.uix.scatter import Scatter
 from kivy.uix.image import Image
+from kivy.clock import Clock
 from kivy.utils import get_color_from_hex as GetColor
 from kivy.metrics import dp
 from kivy.graphics import Color, Line
@@ -105,7 +106,7 @@ class Arrow(Scatter):
         self.auto_bring_to_front = False
         self.img = Image(
             color=GetColor(App.get_running_app().CT.CurrentTheme.GRAPH_ARROW_NACTIVE),
-            size=(dp(25), dp(20)), pos=(dp(18)*-0.02, dp(10)*-0.02),
+            size=(dp(25), dp(20)), pos=(dp(18)*-0.04, dp(10)*-0.04),
             source="asset/triangle.png", opacity=1
         )
         self.add_widget(self.img)
@@ -125,7 +126,7 @@ class NodeLine(Widget):
         self.add_widget(self.arrow)
         self.displayLineName()
         self.displayLine()
-        self.changeLine()
+        Clock.schedule_once(lambda *_: self.update2NodePosAngle(), 0)
     
     def displayLineName(self):
         if self.invisible is False:

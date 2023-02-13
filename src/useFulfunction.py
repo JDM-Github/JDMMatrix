@@ -38,10 +38,10 @@ def changeWindow(widget):
         App.get_running_app().realWidget.clear_widgets()
         if Window.width < Window.height:
             orientation.set_landscape()
-            widget.clockM = Clock.schedule_interval(lambda _: checkLandscape(), 1/60)
+            widget.clockM = Clock.schedule_interval(lambda _: checkLandscape(widget), 1/60)
         else:
             orientation.set_portrait()
-            widget.clockM = Clock.schedule_interval(lambda _: checkPortrait(), 1/60)
+            widget.clockM = Clock.schedule_interval(lambda _: checkPortrait(widget), 1/60)
     else:
         Window.size = (Window.height, Window.width)
         App.get_running_app().restart(App.get_running_app().Matrixconfig.get("CurrentTheme"))

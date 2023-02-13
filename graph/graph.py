@@ -105,7 +105,7 @@ class Graph(Widget):
         self.show_Coords : bool = False
         self.show_Number : bool = True
         self.fileChooserOpened : bool = False
-        self.alwaysAskLocation : bool = True
+        self.alwaysAskLocation : bool = False
         self.minimum_size : int = dp(10)
         self.maximum_size : int = dp(100)
         
@@ -316,15 +316,14 @@ class Graph(Widget):
         self.all_Nodes.add_widget(self.all_nodes_line[-1])
         self.all_nodes_line[-1].node1.position = pos1
         self.all_nodes_line[-1].node2.position = pos2
-        self.all_nodes_line[-1].node1.setPosition()
-        self.all_nodes_line[-1].node2.setPosition()
+        self.all_nodes_line[-1].update2NodePosAngle()
         if self.show_Coords:
             self.all_nodes_line[-1].node1.add_widget(self.all_nodes_line[-1].node1.label)
             self.all_nodes_line[-1].node2.add_widget(self.all_nodes_line[-1].node2.label)
 
         for i, node in enumerate(self.all_nodes_line):
             node.name_Label.text = chr(65 + i)
-    
+
     def addInvisibleNodeLine(self):
         self.all_nodes_line_invisible.append(
             [NodeLine(invisible=True, pos1=(-1000, -1000), pos2=(-1000, -1000)),
