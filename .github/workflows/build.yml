@@ -38,4 +38,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: JDMMatrix Package
-          path: JDMMatrix/Zip/
+          path: ${{ steps.buildozer.outputs.filename }}
