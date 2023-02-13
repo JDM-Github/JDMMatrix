@@ -38,7 +38,9 @@ class MatrixCalculator(App):
 
     def restart(self, theme: str):
         self.Matrixconfig["CurrentTheme"] = theme
+        self.matrixCalc.addField()
         self.matrixCalc.MatrixFunctions.MatrixResult.coloredResultString = self.matrixCalc.MatrixFunctions.MatrixResult.resultString
+
         self.saveConfig()
         self.realWidget.clear_widgets()
         self.CT.CurrentTheme = getattr(self.CT, self.Matrixconfig.get("CurrentTheme"))

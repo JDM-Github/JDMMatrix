@@ -1,7 +1,9 @@
+from plyer import orientation
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.graphics import RoundedRectangle, Color, Rectangle
-from kivy.utils import get_color_from_hex as GetColor
+from kivy.utils import get_color_from_hex as GetColor, platform
 from configuration import soundClick
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
@@ -29,6 +31,32 @@ def displayTitle(widget: Widget, text: str):
         Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.MENU_COLOR))
         Rectangle(size=widget.title.size, pos=widget.title.pos)
     widget.add_widget(widget.title)
+
+def changeWindow(widget):
+    if platform == "android":
+        widget.oldWidth = Window.width
+        App.get_running_app().realWidget.clear_widgets()
+        if Window.width < Window.height:
+            orientation.set_landscape()
+            widget.clockM = Clock.schedule_interval(lambda _: checkLandscape(), 1/60)
+        else:
+            orientation.set_portrait()
+            widget.clockM = Clock.schedule_interval(lambda _: checkPortrait(), 1/60)
+    else:
+        Window.size = (Window.height, Window.width)
+        App.get_running_app().restart(App.get_running_app().Matrixconfig.get("CurrentTheme"))
+
+def checkPortrait(widget):
+    if Window.width < widget.oldWidth:
+        widget.clockM.cancel()
+        App.get_running_app().restart(App.get_running_app().Matrixconfig.get("CurrentTheme"))
+
+def checkLandscape(widget):
+    if Window.width > widget.oldWidth:
+        widget.clockM.cancel()
+        App.get_running_app().restart(App.get_running_app().Matrixconfig.get("CurrentTheme"))
+
+def changeSound(): soundClick.volume = int(not soundClick.volume)
 
 class CustomLabel(Label):
     
