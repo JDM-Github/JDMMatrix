@@ -33,11 +33,8 @@ jobs:
           command: buildozer android debug
           buildozer_version: master
 
-      - run: mkdir -p JDMMatrix/Zip
-    
       - name: Upload artifacts
       - uses: actions/upload-artifact@v2
-        
         with:
           name: JDMMatrix Package
           path: ${{ steps.buildozer.outputs.filename }}
