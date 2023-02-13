@@ -33,10 +33,10 @@ jobs:
           command: buildozer android debug
           buildozer_version: master
 
+      - name: Create Folder
+        run: mkdir -p JDMMatrix/Zip
+    
       - name: Upload artifacts
-      - uses: actions/checkout@v3
-      - run: mkdir -p JDMMatrix/Zip
-        
       - uses: actions/upload-artifact@v2
         
         with:
