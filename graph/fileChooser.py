@@ -46,7 +46,6 @@ class CustomFolderButton(CustomWidget):
             if wid: wid.color2.rgb = GetColor(wid.buttonColor)
             self.parent.parent.parent.selected = self
 
-
 class CustomFileChooser(Widget):
     
     def __init__(self, cusPath=None, **kwargs):

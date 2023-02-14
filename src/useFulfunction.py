@@ -73,6 +73,7 @@ class CustomLabel(Label):
 class CustomWidget(Widget):
     def __init__(self, pos: list[int, int], size: list[int, int], name: str, autoCall: bool = True, **kwargs):
         super().__init__(**kwargs)
+        self.labelMode = False
         self.selector = False
         self.toggleMode = False
         self.activate = False
@@ -124,6 +125,7 @@ class CustomWidget(Widget):
         self.rect2.size     = self.size
 
     def on_touch_down(self, touch):
+        if self.labelMode: return super().on_touch_down(touch)
         if self.collide_point(*touch.pos):
             self.cfunctions()
             soundClick.play()
@@ -131,6 +133,7 @@ class CustomWidget(Widget):
         return super().on_touch_down(touch)
 
     def on_touch_up(self, touch):
+        if self.labelMode: return super().on_touch_up(touch)
         if self.clicked:
             self.functions()
             self.func_binder()

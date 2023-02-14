@@ -1,0 +1,446 @@
+{
+    "title": {
+        "Text": "JDM Matrix",
+        "Activate": true
+    },
+    "package.name": {
+        "Text": "JDMMatrix",
+        "Activate": true
+    },
+    "package.domain": {
+        "Text": "org.jdm.matrix.calc",
+        "Activate": true
+    },
+    "source.dir": {
+        "Text": ".",
+        "Activate": true
+    },
+    "source.include_exts": {
+        "Text": "py,png,jpg,kv,atlas,ttf,mp3,json",
+        "Activate": true
+    },
+    "source.include_patterns": {
+        "Text": "assets/*,images/*.png",
+        "Activate": false
+    },
+    "source.exclude_exts": {
+        "Text": "spec",
+        "Activate": false
+    },
+    "source.exclude_dirs": {
+        "Text": "tests, bin, venv",
+        "Activate": false
+    },
+    "source.exclude_patterns": {
+        "Text": "license,images/*/*.jpg",
+        "Activate": false
+    },
+    "version": {
+        "Text": "0.2.2",
+        "Activate": true
+    },
+    "version.regex": {
+        "Text": "__version__ = ['\"](.*)['\"]",
+        "Activate": false
+    },
+    "version.filename": {
+        "Text": "%(source.dir)s/main.py",
+        "Activate": false
+    },
+    "requirements": {
+        "Text": "python3,kivy,plyer",
+        "Activate": true
+    },
+    "requirements.source.kivy": {
+        "Text": "../../kivy",
+        "Activate": false
+    },
+    "presplash.filename": {
+        "Text": "%(source.dir)s/asset/presplash.png",
+        "Activate": true
+    },
+    "icon.filename": {
+        "Text": "%(source.dir)s/asset/icon.png",
+        "Activate": true
+    },
+    "orientation": {
+        "Text": "portrait",
+        "Activate": true
+    },
+    "services": {
+        "Text": "NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY",
+        "Activate": false
+    },
+    "osx.python_version": {
+        "Text": "3",
+        "Activate": true
+    },
+    "osx.kivy_version": {
+        "Text": "1.9.1",
+        "Activate": true
+    },
+    "fullscreen": {
+        "Text": "0",
+        "Activate": true
+    },
+    "android.presplash_color": {
+        "Text": "#FFFFFF",
+        "Activate": false
+    },
+    "android.presplash_lottie": {
+        "Text": "\"path/to/lottie/file.json\"",
+        "Activate": false
+    },
+    "icon.adaptive_foreground.filename": {
+        "Text": "%(source.dir)s/data/icon_fg.png",
+        "Activate": false
+    },
+    "icon.adaptive_background.filename": {
+        "Text": "%(source.dir)s/data/icon_bg.png",
+        "Activate": false
+    },
+    "android.permissions": {
+        "Text": "READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, MANAGE_EXTERNAL_STORAGE",
+        "Activate": true
+    },
+    "android.features": {
+        "Text": "android.hardware.usb.host",
+        "Activate": false
+    },
+    "android.api": {
+        "Text": "27",
+        "Activate": false
+    },
+    "android.minapi": {
+        "Text": "21",
+        "Activate": false
+    },
+    "android.sdk": {
+        "Text": "20",
+        "Activate": false
+    },
+    "android.ndk": {
+        "Text": "23b",
+        "Activate": false
+    },
+    "android.ndk_api": {
+        "Text": "21",
+        "Activate": false
+    },
+    "android.private_storage": {
+        "Text": "True",
+        "Activate": false
+    },
+    "android.ndk_path": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.sdk_path": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.ant_path": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.skip_update": {
+        "Text": "False",
+        "Activate": false
+    },
+    "android.accept_sdk_license": {
+        "Text": "False",
+        "Activate": false
+    },
+    "android.entrypoint": {
+        "Text": "org.kivy.android.PythonActivity",
+        "Activate": false
+    },
+    "android.activity_class_name": {
+        "Text": "org.kivy.android.PythonActivity",
+        "Activate": false
+    },
+    "android.extra_manifest_xml": {
+        "Text": "./src/android/extra_manifest.xml",
+        "Activate": false
+    },
+    "android.extra_manifest_application_arguments": {
+        "Text": "./src/android/extra_manifest_application_arguments.xml",
+        "Activate": false
+    },
+    "android.service_class_name": {
+        "Text": "org.kivy.android.PythonService",
+        "Activate": false
+    },
+    "android.apptheme": {
+        "Text": "\"@android:style/Theme.NoTitleBar\"",
+        "Activate": false
+    },
+    "android.whitelist": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.whitelist_src": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.blacklist_src": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.add_jars": {
+        "Text": "foo.jar,bar.jar,path/to/more/*.jar",
+        "Activate": false
+    },
+    "android.add_src": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.add_aars": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.add_assets": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.gradle_dependencies": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.enable_androidx": {
+        "Text": "False",
+        "Activate": false
+    },
+    "android.add_compile_options": {
+        "Text": "\"sourceCompatibility = 1.8\", \"targetCompatibility = 1.8\"",
+        "Activate": false
+    },
+    "android.add_gradle_repositories": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.add_packaging_options": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.add_activities": {
+        "Text": "com.example.ExampleActivity",
+        "Activate": false
+    },
+    "android.ouya.category": {
+        "Text": "GAME",
+        "Activate": false
+    },
+    "android.ouya.icon.filename": {
+        "Text": "%(source.dir)s/data/ouya_icon.png",
+        "Activate": false
+    },
+    "android.manifest.intent_filters": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.manifest.launch_mode": {
+        "Text": "standard",
+        "Activate": false
+    },
+    "android.add_libs_armeabi": {
+        "Text": "libs/android/*.so",
+        "Activate": false
+    },
+    "android.add_libs_armeabi_v7a": {
+        "Text": "libs/android-v7/*.so",
+        "Activate": false
+    },
+    "android.add_libs_arm64_v8a": {
+        "Text": "libs/android-v8/*.so",
+        "Activate": false
+    },
+    "android.add_libs_x86": {
+        "Text": "libs/android-x86/*.so",
+        "Activate": false
+    },
+    "android.add_libs_mips": {
+        "Text": "libs/android-mips/*.so",
+        "Activate": false
+    },
+    "android.wakelock": {
+        "Text": "False",
+        "Activate": false
+    },
+    "android.meta_data": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.library_references": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.uses_library": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.logcat_filters": {
+        "Text": "*:S python:D",
+        "Activate": false
+    },
+    "android.logcat_pid_only": {
+        "Text": "False",
+        "Activate": false
+    },
+    "android.adb_args": {
+        "Text": "-H host.docker.internal",
+        "Activate": false
+    },
+    "android.copy_libs": {
+        "Text": "1",
+        "Activate": false
+    },
+    "android.archs": {
+        "Text": "arm64-v8a, armeabi-v7a",
+        "Activate": true
+    },
+    "android.numeric_version": {
+        "Text": "1",
+        "Activate": false
+    },
+    "android.allow_backup": {
+        "Text": "True",
+        "Activate": true
+    },
+    "android.backup_rules": {
+        "Text": "",
+        "Activate": false
+    },
+    "android.manifest_placeholders": {
+        "Text": "[:]",
+        "Activate": false
+    },
+    "android.no-compile-pyo": {
+        "Text": "True",
+        "Activate": false
+    },
+    "android.release_artifact": {
+        "Text": "aab",
+        "Activate": false
+    },
+    "android.debug_artifact": {
+        "Text": "apk",
+        "Activate": false
+    },
+    "p4a.url": {
+        "Text": "",
+        "Activate": false
+    },
+    "p4a.fork": {
+        "Text": "kivy",
+        "Activate": false
+    },
+    "p4a.branch": {
+        "Text": "master",
+        "Activate": false
+    },
+    "p4a.commit": {
+        "Text": "HEAD",
+        "Activate": false
+    },
+    "p4a.source_dir": {
+        "Text": "",
+        "Activate": false
+    },
+    "p4a.local_recipes": {
+        "Text": "",
+        "Activate": false
+    },
+    "p4a.hook": {
+        "Text": "",
+        "Activate": false
+    },
+    "p4a.bootstrap": {
+        "Text": "sdl2",
+        "Activate": false
+    },
+    "p4a.port ": {
+        "Text": "",
+        "Activate": false
+    },
+    "p4a.setup_py": {
+        "Text": "false",
+        "Activate": false
+    },
+    "p4a.extra_args": {
+        "Text": "",
+        "Activate": false
+    },
+    "ios.kivy_ios_dir": {
+        "Text": "../kivy-ios",
+        "Activate": false
+    },
+    "ios.kivy_ios_url": {
+        "Text": "https://github.com/kivy/kivy-ios",
+        "Activate": true
+    },
+    "ios.kivy_ios_branch": {
+        "Text": "master",
+        "Activate": true
+    },
+    "ios.ios_deploy_dir": {
+        "Text": "../ios_deploy",
+        "Activate": false
+    },
+    "ios.ios_deploy_url": {
+        "Text": "https://github.com/phonegap/ios-deploy",
+        "Activate": true
+    },
+    "ios.ios_deploy_branch": {
+        "Text": "1.10.0",
+        "Activate": true
+    },
+    "ios.codesign.allowed": {
+        "Text": "false",
+        "Activate": true
+    },
+    "ios.codesign.debug ": {
+        "Text": "\"iPhone Developer: <lastname> <firstname> (<hexstring>)\"",
+        "Activate": false
+    },
+    "ios.codesign.development_team.debug": {
+        "Text": "<hexstring>",
+        "Activate": false
+    },
+    "ios.codesign.release": {
+        "Text": "%(ios.codesign.debug)s",
+        "Activate": false
+    },
+    "ios.codesign.development_team.release": {
+        "Text": "<hexstring>",
+        "Activate": false
+    },
+    "ios.manifest.app_url": {
+        "Text": "",
+        "Activate": false
+    },
+    "ios.manifest.display_image_url": {
+        "Text": "",
+        "Activate": false
+    },
+    "ios.manifest.full_size_image_url": {
+        "Text": "",
+        "Activate": false
+    },
+    "log_level": {
+        "Text": "2",
+        "Activate": true
+    },
+    "warn_on_root": {
+        "Text": "1",
+        "Activate": true
+    },
+    "build_dir": {
+        "Text": "./.buildozer",
+        "Activate": false
+    },
+    "bin_dir": {
+        "Text": "./bin",
+        "Activate": false
+    }
+}
