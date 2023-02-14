@@ -60,7 +60,7 @@ orientation = portrait
 #
 
 #
-# author = © Copyright Info
+# author = ï¿½ Copyright Info
 
 # change the major version of python used by the app
 osx.python_version = 3

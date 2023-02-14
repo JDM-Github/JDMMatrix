@@ -140,7 +140,7 @@ class MainWidget(Widget):
                 "Text" : mode.txtinput.text,
                 "Activate": mode.activator.activate,
             }
-        with open("buildozer-config.json", "w") as f:
+        with open("build-config.json", "w") as f:
             json.dump(self.config, f, indent=4, separators=(',', ': '))
 
     def buildBuildozer(self):
