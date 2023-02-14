@@ -37,6 +37,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: JDMMatrix-0.2.2
+          name: JDMMatrix-0.2.3
           path: ${{ steps.buildozer.outputs.filename }}
-
