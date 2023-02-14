@@ -7,7 +7,7 @@ compile:
 
 build:
 	@cls
-	@python buildozer-create.py
+	@python build-create.py
 
 icon:
 	@cls
