@@ -1,4 +1,4 @@
-# JDMMatrix-0.2.3
+# JDMMatrix-0.2.4
 
  - Matrix Calculator
  - Custom Theme
@@ -7,7 +7,6 @@
  - Save Config
  - Binder
  - Own Buildozer Creator
-
 
 # Buildozer:
 ```
@@ -42,7 +41,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,mp3,json
 # source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.2.3
+version = 0.2.4
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -73,7 +72,7 @@ orientation = portrait
 #
 
 #
-# author = ï¿½ Copyright Info
+# author = © Copyright Info
 
 # change the major version of python used by the app
 osx.python_version = 3

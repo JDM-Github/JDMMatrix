@@ -1,4 +1,4 @@
-# JDMMatrix-0.2.3
+# JDMMatrix-0.2.4
 
  - Matrix Calculator
  - Custom Theme
