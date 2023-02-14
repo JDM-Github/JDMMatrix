@@ -1,3 +1,4 @@
+import os
 import json
 from configuration import WINDOW_HEIGHT
 from kivy.uix.widget import Widget
@@ -184,6 +185,7 @@ class MainWidget(Widget):
                         "#\n"
                         "# buildozer --profile demo android debug"))
         self.buildYml()
+        self.updateReadMe()
     
     def buildYml(self):
         with open(".github/workflows/build.yml", "w") as f:
@@ -230,6 +232,15 @@ class MainWidget(Widget):
 "        with:\n"
 f"          name: {self.config.get('package.name').get('Text') + '-' + self.config.get('version').get('Text')}\n"
 "          path: ${{ steps.buildozer.outputs.filename }}")
+
+    def updateReadMe(self):
+        with open(r'all_md/Introduction.md', 'r') as f:
+            lines = f.readlines()
+            lines[0] = f"# {self.config.get('package.name').get('Text') + '-' + self.config.get('version').get('Text')}\n"
+        with open("all_md/Introduction.md", "w") as f:
+            f.writelines(lines)
+
+        os.system("makemd")
 
     def setComment(self, text):
         if not text: return text

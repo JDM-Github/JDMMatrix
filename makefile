@@ -5,6 +5,10 @@ compile:
 	@cls
 	@python -m main
 
+build:
+	@cls
+	@python buildozer-create.py
+
 icon:
 	@cls
 	@python create/createIcon.py

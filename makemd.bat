@@ -1,0 +1,1 @@
+@type all_md\Introduction.md buildozer.spec all_md\End.md > README.md
