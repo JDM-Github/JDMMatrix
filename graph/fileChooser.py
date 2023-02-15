@@ -6,7 +6,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.scrollview import ScrollView
 from kivy.graphics import RoundedRectangle, Color
 from kivy.uix.gridlayout import GridLayout
-from kivy.utils import get_color_from_hex as GetColor
+from kivy.utils import get_color_from_hex as GetColor, platform
 from src import CustomWidget, displayTitle
 
 class MainFileChooser(FileChooserListView):
@@ -39,6 +39,9 @@ class CustomFolderButton(CustomWidget):
     def functions(self):
         wid = self.parent.parent.parent.selected
         if wid is self:
+            if platform == "android":
+                if not self.path.endswith(self.parent.cusPath):
+                    self.path = self.parent.cusPath
             wid.color2.rgb = GetColor(wid.buttonColor)
             self.parent.parent.parent.fileChooser.path = self.path
             self.parent.parent.parent.selected = None            

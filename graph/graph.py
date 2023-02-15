@@ -248,13 +248,13 @@ class Graph(Widget):
         self.show_Coords = not self.show_Coords
         for node in self.all_nodes_line:
             node.node1.label.text = str(f"({round(round(node.node1.position[0]*100, 2)/100, 1)}, {round(round(node.node1.position[1]*100, 2)/100, 1)})")
+            node.node2.label.text = str(f"({round(round(node.node2.position[0]*100, 2)/100, 1)}, {round(round(node.node2.position[1]*100, 2)/100, 1)})")
             if node is not self.line_selected:
                 node.node1.remove_widget(node.node1.label)
                 node.node2.remove_widget(node.node2.label)
                 if self.show_Coords:
                     node.node1.add_widget(node.node1.label)
                     node.node2.add_widget(node.node2.label)
-                    
 
     def setGridValue(self, widget=None):
         self.stop_text = True

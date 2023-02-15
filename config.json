@@ -27,7 +27,7 @@
         ],
         [
             "0",
-            "3",
+            "0",
             "0",
             "0",
             "0",
@@ -38,7 +38,7 @@
             "0"
         ],
         [
-            "1",
+            "0",
             "0",
             "0",
             "0",
@@ -755,8 +755,8 @@
         ]
     ],
     "ResultList": [],
-    "CResultString": "",
-    "ResultString": "",
+    "CResultString": "Matrix A\n| 3 | -1 | \n| 0 | -3 | \n| 12 | 5 | \n\n[color=03d5f5]Answer: Decimal and Fraction Version\n[color=03d5f5]Area-Triangle[/color]: 0 -> 0\n\n[color=311ede]Step by Step:\n\n[color=08fbef]1. Create New Matrix\n| 3 | -1 | 1 | \n| 0 | -3 | 1 | \n| 12 | 5 | 1 | \n\n[color=08fbef]2. Get The Determinant of Matrix\n[(3 * -3 * 1) + (-1 * 1 * 12) + (1 * 0 * 5)] - \n[(-1 * 0 * 1) + (3 * 1 * 5) + (1 * -3 * 12)]\n[-9 + -12 + 0] - [0 + 15 + -36]\n-21 - -21\n[color=311ede]Determinant[/color]: 0\n\n[color=08fbef]3. Multiply The Determinant to +-(1/2)\n(1/2) * (0)\n\nThree Points is Collinear",
+    "ResultString": "Matrix A\n| 3 | -1 | \n| 0 | -3 | \n| 12 | 5 | \n\nAnswer: Decimal and Fraction Version\nArea-Triangle: 0 -> 0\n\nStep by Step:\n\n1. Create New Matrix\n| 3 | -1 | 1 | \n| 0 | -3 | 1 | \n| 12 | 5 | 1 | \n\n2. Get The Determinant of Matrix\n[(3 * -3 * 1) + (-1 * 1 * 12) + (1 * 0 * 5)] - \n[(-1 * 0 * 1) + (3 * 1 * 5) + (1 * -3 * 12)]\n[-9 + -12 + 0] - [0 + 15 + -36]\n-21 - -21\nDeterminant: 0\n\n3. Multiply The Determinant to +-(1/2)\n(1/2) * (0)\n\nThree Points is Collinear",
     "ResultRows": 0,
     "ResultCols": 0,
     "LastScreen": "Main",
@@ -766,15 +766,25 @@
     "Nodes": [
         [
             [
-                2.5,
-                10.9
+                3.3,
+                1.3
             ],
             [
-                0.0,
-                -0.0
+                -5.5,
+                -2.2
+            ]
+        ],
+        [
+            [
+                -2.6,
+                3.6
+            ],
+            [
+                2.6,
+                -2.4
             ]
         ]
     ],
-    "CameraX": -126.91771808136642,
-    "CameraY": -376.1054888183661
+    "CameraX": 8.082281918633583,
+    "CameraY": -70.10548881836587
 }
