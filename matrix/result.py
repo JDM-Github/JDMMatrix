@@ -13,6 +13,16 @@ from kivy.metrics import sp
 from .matrixHolder import MatrixHolder
 from src import setCanvas, CustomWidget, Toast
 
+
+import numpy as np
+import matplotlib.pyplot as plt
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import Image
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.screenmanager import Screen
+
 class LineLabel(Label):
 
     def __init__(self, **kwargs):
@@ -26,15 +36,68 @@ class LineLabel(Label):
 
 class CustomButton(CustomWidget):
 
-    def __init__(self, name: str, **kwargs):
-        Rmax = 5
+    def __init__(self, name: str, radius=[0, 0, 0, 0], **kwargs):
+        Rmax = 6
         size = ((Window.width*0.8) / Rmax, ((Window.height*0.2) / 4) if Window.width < Window.height else ((Window.width*0.2) / 4))
         pos = (-200, -200)
-        super().__init__(pos, size, name, True, **kwargs)
+        super().__init__(pos, size, name, True, radius, **kwargs)
 
     def on_touch_down(self, touch):
         if self.parent.parent.disabledResult is False:
             super().on_touch_down(touch)
+
+
+class MatrixScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.resultList = [33, 28, 36, 6, 31, 5, 14, -2, 26]
+        self.resultRows = 3 
+        self.resultCols = 3 
+        self.printResult()
+
+    def printResult(self):
+        layout = BoxLayout(orientation='vertical')
+        layout.size_hint = (None, None)
+        layout.size = Window.size
+
+        flattened_matrix = self.resultList
+        rows, cols = self.resultRows, self.resultCols
+        matrix = np.array(flattened_matrix).reshape(rows, cols)
+
+        fig = plt.figure(figsize=(Window.width / 100, Window.height / 100)) 
+        ax = fig.add_subplot(111, projection='3d')
+
+        x = np.arange(cols)
+        y = np.arange(rows)
+        x, y = np.meshgrid(x, y)
+        z = matrix 
+
+        ax.plot_surface(x, y, z, cmap="coolwarm", edgecolor='k')  # Use 3D surface plot
+
+        ax.set_title('3D Matrix Visualization', fontsize=18, color='white')
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Value')
+
+        fig.colorbar(ax.plot_surface(x, y, z, cmap="coolwarm", edgecolor='k'))
+
+        canvas = FigureCanvasAgg(fig)
+        canvas.print_figure("matrix_plot_3d.png", dpi=100)
+
+        img = Image(source="matrix_plot_3d.png", size_hint=(None, None), size=(Window.width, Window.height))
+        layout.add_widget(img)
+
+        # back_button = Button(text="Back", size_hint=(None, None), size=(100, 50), pos_hint={'top': 1, 'right': 1})
+        # back_button.bind(on_press=self.go_back)
+        # layout.add_widget(back_button)
+
+        self.add_widget(layout)
+
+    def go_back(self, instance):
+        self.manager.current = 'main_screen'
+
+
+
 
 class MatrixResultBox(Widget):
     
@@ -60,7 +123,7 @@ class MatrixResultBox(Widget):
     def bindCanvas(self, *_):
         self.rect1.pos = (self.x-1, self.y-1)
         self.rect2.pos = self.pos
-        Rmax = 5
+        Rmax = 6
         width = ((Window.width*0.8) / Rmax) + 5
         margin = (Window.width / 2) - ((width * Rmax) / 2) + 2.5
         self.copyClipboard.pos = (self.x+margin, self.y+5)
@@ -68,6 +131,7 @@ class MatrixResultBox(Widget):
         self.toMatrixA.pos = (self.x+margin+width*2, self.y+5)
         self.toMatrixB.pos = self.x+margin+width*3, self.y+5
         self.coloredStr.pos = self.x+margin+width*4, self.y+5
+        self.resultStr.pos = self.x+margin+width*5, self.y+5
         self.scroller.pos = (self.x+5, self.y+5)
 
     def showResult(self):
@@ -100,6 +164,7 @@ class MatrixResultBox(Widget):
         self.resultRows = config.get("ResultRows") if config.get("ResultRows") else 0
         self.resultCols = config.get("ResultCols") if config.get("ResultCols") else 0
         self.isFullSize = False
+        self.isGraphShowing = False
         self.convertStringtoLabel(self.resultString)
 
     def turnStringToLabel(self, Coloredstring : str, string: str, result : list, row : int, col : int):
@@ -154,11 +219,14 @@ class MatrixResultBox(Widget):
         self.remove_widget(self.toMatrixA)
         self.remove_widget(self.toMatrixB)
         self.remove_widget(self.coloredStr)
+        self.remove_widget(self.resultStr)
+
         self.add_widget(self.copyClipboard)
         self.add_widget(self.clearClipboard)
         self.add_widget(self.toMatrixA)
         self.add_widget(self.toMatrixB)
         self.add_widget(self.coloredStr)
+        self.add_widget(self.resultStr)
 
     def changeMatrixValue(self, matrix : MatrixHolder):
         if self.resultList:
@@ -182,12 +250,55 @@ class MatrixResultBox(Widget):
     def copyClipBoard(self):
         Toast("Clipboard Copied").start()
         Clipboard.copy(self.resultString if self.resultString else "None")
-    
+
     def changeStrResult(self):
         self.isColoredText = not self.isColoredText
         self.coloredStr.mainLabel.text = "No Color" if self.isColoredText else "Color"
         self.turnStringToLabel(
             self.coloredResultString , self.resultString, self.resultList, self.resultRows, self.resultCols)
+
+    def printResult(self):
+        try:
+            self.isGraphShowing = True
+            self.layout = BoxLayout(orientation='vertical')
+            self.layout.size_hint = (None, None)
+            self.layout.size = Window.width * 0.9, Window.height * 0.8
+
+            flattened_matrix = self.resultList
+            rows, cols = self.resultRows, self.resultCols
+            matrix = np.array(flattened_matrix).reshape(rows, cols)
+
+            fig = plt.figure(figsize=(Window.width / 100, Window.height / 100)) 
+            ax = fig.add_subplot(111, projection='3d')
+
+            x = np.arange(cols)
+            y = np.arange(rows)
+            x, y = np.meshgrid(x, y)
+            z = matrix 
+
+            ax.plot_surface(x, y, z, cmap="coolwarm", edgecolor='k')
+            ax.set_title('3D Matrix Visualization', fontsize=18, color='white')
+            ax.set_xlabel('X')
+            ax.set_ylabel('Y')
+            ax.set_zlabel('Value')
+
+            fig.colorbar(ax.plot_surface(x, y, z, cmap="coolwarm", edgecolor='k'))
+
+            canvas = FigureCanvasAgg(fig)
+            canvas.print_figure("matrix_plot_3d.png", dpi=100)
+            img = Image(source="matrix_plot_3d.png", size_hint=(None, None), size=(Window.width, Window.height))
+            self.layout.add_widget(img)
+
+            self.add_widget(self.layout)
+        except:
+            pass
+
+    def close_plot(self):
+        self.isGraphShowing = False
+        self.remove_widget(self.layout)
+
+
+
 
     def displaySomeButton(self):
         self.copyClipboard = CustomButton("Copy")
@@ -200,9 +311,13 @@ class MatrixResultBox(Widget):
         self.toMatrixB.func_binder = lambda : self.changeMatrixValue(self.parent.secondMatrixHolder)
         self.coloredStr = CustomButton("No Color" if self.isColoredText else "Color")
         self.coloredStr.func_binder = lambda : self.changeStrResult()
+
+        self.resultStr = CustomButton("GRAPH")
+        self.resultStr.func_binder = lambda : self.printResult()
         self.add_widget(self.copyClipboard)
         self.add_widget(self.clearClipboard)
         self.add_widget(self.toMatrixA)
         self.add_widget(self.toMatrixB)
         self.add_widget(self.coloredStr)
+        self.add_widget(self.resultStr)
 

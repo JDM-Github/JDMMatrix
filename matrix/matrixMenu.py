@@ -86,6 +86,7 @@ class MatrixMenu(Widget):
             self.editorCol = Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.WINDOW_BACKGROUND), a=0.8)
             self.editorBG = Rectangle(size=Window.size)
         self.add_widget(self.themeEditor)
+
     def changeThemeFunc(self): 
         self.parent.parent.manager.transition.direction = "left" if self.name == "Field" else "right"
         self.parent.parent.manager.change_Screen = "Theme" if self.name == "Field" else self.parent.parent.parent.old_Screen

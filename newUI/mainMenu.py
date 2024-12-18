@@ -20,7 +20,7 @@ class MainMenu(Widget):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        displayTitle(self, "JDM Matrix")
+        displayTitle(self, "Matrix Master")
         self.displayModes()
         self.displayBottomButton()
 
@@ -35,14 +35,18 @@ class MainMenu(Widget):
         
         self.matrixMode = Custom("Matrix Mode")
         self.matrixMode.func_binder = lambda : self.changeScreen("Field")
-        self.vectorMode = Custom("Vector Mode")
+        # self.vectorMode = Custom("Vector Mode")
         # self.vectorMode.func_binder = lambda : self.changeScreen("Vector")
         self.graphMode = Custom("Graph Mode")
         self.graphMode.func_binder = lambda : self.changeScreen("Graph")
+
+        self.trigo = Custom("Trigonometry Mode")
+        self.trigo.func_binder = lambda : self.changeScreen("Trigonometry")
         
         self.grid.add_widget(self.matrixMode)
-        self.grid.add_widget(self.vectorMode)
+        # self.grid.add_widget(self.vectorMode)
         self.grid.add_widget(self.graphMode)
+        self.grid.add_widget(self.trigo)
         
         self.scroll.add_widget(self.grid)
         self.add_widget(self.scroll)

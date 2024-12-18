@@ -13,7 +13,7 @@
 
 # class Matrix(Widget):
 
-#     def __init__(self, **kwargs):
+#     def __init__(self, **kwargs): 
 #         super().__init__(**kwargs)
 #         self.allBooleanDisabler()
 #         self.displayMatrixHolder()

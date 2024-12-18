@@ -9,11 +9,13 @@ from kivy.utils import get_color_from_hex as GetColor
 from kivy.graphics import Color, Rectangle
 from kivy.properties import StringProperty
 
+from trigonometry import Trigonometry
+
 from .mainMenu import MainMenu
 from graph import Graph
 from matrix import Matrix
 from theme import ThemeWidget
-
+from kivy.uix.image import Image
 from .exitScreen import ExitScreen
 
 class SM(ScreenManager):
@@ -41,6 +43,9 @@ class SM(ScreenManager):
             self.transition = FadeTransition()
             self.parent.ingraph = True
             self.parent.addGraph()
+        elif self.change_Screen == "Trigonometry":
+            self.parent.ingraph = False
+            self.parent.addTrigo()
         self.current = self.change_Screen
 
 class MainScreenWidget(Widget):
@@ -54,7 +59,8 @@ class MainScreenWidget(Widget):
             Color(rgb=GetColor(App.get_running_app().CT.CurrentTheme.MAIN_BACKGROUND))
             Rectangle(size=self.size)
             self.CmainBg = Color(rgba=GetColor("ffffff66"))
-            self.mainBg = Rectangle(size=self.size, source=App.get_running_app().CT.CurrentTheme.MAIN_BG_SOURCE)
+            # self.mainBg = Rectangle(size=self.size, source=App.get_running_app().CT.CurrentTheme.MAIN_BG_SOURCE)
+        self.add_widget(Image(fit_mode="fill", source=App.get_running_app().CT.CurrentTheme.MAIN_BG_SOURCE, size=self.size))
         self.allScreen()
         self.exitScreen = ExitScreen()
         self.add_widget(self.exitScreen)
@@ -88,6 +94,17 @@ class MainScreenWidget(Widget):
             self.graph.loadAllNodes()
             return
         self.graph.setAllCanvas()
+    
+    def addTrigo(self):
+        if not hasattr(self, "Trigo"):
+            self.Trigo = Screen(name="Trigonometry")
+            self.trigo = Trigonometry()
+            self.Trigo.add_widget(self.trigo)
+            self.sm.add_widget(self.Trigo)
+            # self.graph.setAllCanvas()
+            # self.graph.loadAllNodes()
+            return
+        # self.graph.setAllCanvas()
 
     def allScreen(self):
         config = App.get_running_app().Matrixconfig

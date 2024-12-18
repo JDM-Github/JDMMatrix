@@ -1,11 +1,16 @@
 import kivy
-
 kivy.require("1.9.1")
+from configuration import WINDOW_WIDTH, WINDOW_HEIGHT
+
+from kivy.config import Config
+Config.set("graphics", "width", WINDOW_WIDTH)
+Config.set("graphics", "height", WINDOW_HEIGHT)
+Config.write()
+
 import json
 from plyer import orientation
 from theme import Theme
 from src import Toast
-from configuration import WINDOW_WIDTH, WINDOW_HEIGHT
 from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from kivy.core.text import LabelBase
@@ -97,7 +102,10 @@ class MatrixCalculator(App):
         if key == 27:
             self.matrixCalc.addTheme()
             if self.matrixCalc.MatrixFunctions.MatrixResult.isFullSize:
-                self.matrixCalc.MatrixFunctions.MatrixResult.closeResult()
+                if self.matrixCalc.MatrixFunctions.MatrixResult.isGraphShowing:
+                    self.matrixCalc.MatrixFunctions.MatrixResult.close_plot()
+                else:
+                    self.matrixCalc.MatrixFunctions.MatrixResult.closeResult()
             elif self.matrixCalc.MatrixFunctions.allFunctionsWidget.opened:
                 self.matrixCalc.MatrixFunctions.allFunctionsWidget.close()
             elif self.matrixCalc.sm.current == "Theme":
@@ -124,3 +132,4 @@ class MatrixCalculator(App):
 
 if __name__ == "__main__": 
     MatrixCalculator().run()
+    # print("FUCK")

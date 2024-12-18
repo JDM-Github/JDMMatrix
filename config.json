@@ -7,28 +7,16 @@
         "E",
         "F"
     ],
-    "CurrentTheme": "JDM",
-    "CurrentFirst": "A",
-    "CurrentSecond": "B",
+    "CurrentTheme": "ORIGINAL",
+    "CurrentFirst": "B",
+    "CurrentSecond": "C",
     "ARows": 3,
     "ACols": 3,
     "AEValue": [
         [
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0"
-        ],
-        [
-            "0",
-            "0",
-            "0",
+            "2",
+            "4",
+            "3",
             "0",
             "0",
             "0",
@@ -38,9 +26,21 @@
             "0"
         ],
         [
+            "3",
+            "5",
+            "5",
             "0",
             "0",
             "0",
+            "0",
+            "0",
+            "0",
+            "0"
+        ],
+        [
+            "1",
+            "2",
+            "1",
             "0",
             "0",
             "0",
@@ -754,37 +754,57 @@
             "0"
         ]
     ],
-    "ResultList": [],
-    "CResultString": "Matrix A\n| 3 | -1 | \n| 0 | -3 | \n| 12 | 5 | \n\n[color=03d5f5]Answer: Decimal and Fraction Version\n[color=03d5f5]Area-Triangle[/color]: 0 -> 0\n\n[color=311ede]Step by Step:\n\n[color=08fbef]1. Create New Matrix\n| 3 | -1 | 1 | \n| 0 | -3 | 1 | \n| 12 | 5 | 1 | \n\n[color=08fbef]2. Get The Determinant of Matrix\n[(3 * -3 * 1) + (-1 * 1 * 12) + (1 * 0 * 5)] - \n[(-1 * 0 * 1) + (3 * 1 * 5) + (1 * -3 * 12)]\n[-9 + -12 + 0] - [0 + 15 + -36]\n-21 - -21\n[color=311ede]Determinant[/color]: 0\n\n[color=08fbef]3. Multiply The Determinant to +-(1/2)\n(1/2) * (0)\n\nThree Points is Collinear",
-    "ResultString": "Matrix A\n| 3 | -1 | \n| 0 | -3 | \n| 12 | 5 | \n\nAnswer: Decimal and Fraction Version\nArea-Triangle: 0 -> 0\n\nStep by Step:\n\n1. Create New Matrix\n| 3 | -1 | 1 | \n| 0 | -3 | 1 | \n| 12 | 5 | 1 | \n\n2. Get The Determinant of Matrix\n[(3 * -3 * 1) + (-1 * 1 * 12) + (1 * 0 * 5)] - \n[(-1 * 0 * 1) + (3 * 1 * 5) + (1 * -3 * 12)]\n[-9 + -12 + 0] - [0 + 15 + -36]\n-21 - -21\nDeterminant: 0\n\n3. Multiply The Determinant to +-(1/2)\n(1/2) * (0)\n\nThree Points is Collinear",
-    "ResultRows": 0,
-    "ResultCols": 0,
+    "ResultList": [
+        -0.227,
+        0.035,
+        0.206,
+        -0.773,
+        -0.035,
+        0.794,
+        0.709,
+        0.014,
+        -0.518
+    ],
+    "CResultString": "Matrix B\n| 1 | 3 | 5 | \n| 23 | -4 | 3 | \n| 2 | 4 | 5 | \n\nAnswer: Inverse of Matrix B\nDecimal Inverse and Fraction Version\n| -0.227 | 0.035 | 0.206 |  ->  | -32/141 | 5/141 | 29/141 | \n| -0.773 | -0.035 | 0.794 |  ->  | -109/141 | -5/141 | 112/141 | \n| 0.709 | 0.014 | -0.518 |  ->  | 100/141 | 2/141 | -73/141 | \n\nStep By Step:\n1. Get The Determinant of Matrix B\n(1 * ((-4 * 5) - (3 * 4))) - \n(3 * ((23 * 5) - (3 * 2))) + \n(5 * ((23 * 4) - (-4 * 2)))\nDeterminant = 141\n\n2. Get The Minors of the Matrix B\n| ((-4 * 1) - (23 * 3)) | ((3 * 1) - (5 * 23)) | ((3 * 3) - (-4 * 5)) | \n| ((4 * 1) - (2 * 3)) | ((5 * 1) - (2 * 5)) | ((5 * 3) - (4 * 5)) | \n| ((4 * 23) - (2 * -4)) | ((5 * 23) - (3 * 2)) | ((5 * -4) - (4 * 3)) | \n\n3. Get The Cofactor using (-1)^i+j\n| -32 * (-1)^0+0 | 109 * (-1)^0+1 | 100 * (-1)^0+2 | \n| -5 * (-1)^1+0 | -5 * (-1)^1+1 | -2 * (-1)^1+2 | \n| 29 * (-1)^2+0 | -112 * (-1)^2+1 | -73 * (-1)^2+2 | \n\n4. Transpose The Matrix\n| -32 | -109 | 100 |  ->  | -32 | 5 | 29 | \n| 5 | -5 | 2 |  ->  | -109 | -5 | 112 | \n| 29 | 112 | -73 |  ->  | 100 | 2 | -73 | \n\n5. Scalar using the 1 / Determinant\n| -32 * (1 / 141) | 5 * (1 / 141) | 29 * (1 / 141) | \n| -109 * (1 / 141) | -5 * (1 / 141) | 112 * (1 / 141) | \n| 100 * (1 / 141) | 2 * (1 / 141) | -73 * (1 / 141) | \n",
+    "ResultString": "Matrix B\n| 1 | 3 | 5 | \n| 23 | -4 | 3 | \n| 2 | 4 | 5 | \n\nAnswer: Inverse of Matrix B\nDecimal Inverse and Fraction Version\n| -0.227 | 0.035 | 0.206 |  ->  | -32/141 | 5/141 | 29/141 | \n| -0.773 | -0.035 | 0.794 |  ->  | -109/141 | -5/141 | 112/141 | \n| 0.709 | 0.014 | -0.518 |  ->  | 100/141 | 2/141 | -73/141 | \n\nStep By Step:\n1. Get The Determinant of Matrix B\n(1 * ((-4 * 5) - (3 * 4))) - \n(3 * ((23 * 5) - (3 * 2))) + \n(5 * ((23 * 4) - (-4 * 2)))\nDeterminant = 141\n\n2. Get The Minors of the Matrix B\n| ((-4 * 1) - (23 * 3)) | ((3 * 1) - (5 * 23)) | ((3 * 3) - (-4 * 5)) | \n| ((4 * 1) - (2 * 3)) | ((5 * 1) - (2 * 5)) | ((5 * 3) - (4 * 5)) | \n| ((4 * 23) - (2 * -4)) | ((5 * 23) - (3 * 2)) | ((5 * -4) - (4 * 3)) | \n\n3. Get The Cofactor using (-1)^i+j\n| -32 * (-1)^0+0 | 109 * (-1)^0+1 | 100 * (-1)^0+2 | \n| -5 * (-1)^1+0 | -5 * (-1)^1+1 | -2 * (-1)^1+2 | \n| 29 * (-1)^2+0 | -112 * (-1)^2+1 | -73 * (-1)^2+2 | \n\n4. Transpose The Matrix\n| -32 | -109 | 100 |  ->  | -32 | 5 | 29 | \n| 5 | -5 | 2 |  ->  | -109 | -5 | 112 | \n| 29 | 112 | -73 |  ->  | 100 | 2 | -73 | \n\n5. Scalar using the 1 / Determinant\n| -32 * (1 / 141) | 5 * (1 / 141) | 29 * (1 / 141) | \n| -109 * (1 / 141) | -5 * (1 / 141) | 112 * (1 / 141) | \n| 100 * (1 / 141) | 2 * (1 / 141) | -73 * (1 / 141) | \n",
+    "ResultRows": 3,
+    "ResultCols": 3,
     "LastScreen": "Main",
     "CurrentScreen": "Main",
-    "GraphSaveCount": 3,
-    "GraphMainPath": "C:\\Users\\numbe\\OneDrive\\Pictures\\MatrixCalculator\\Graph",
+    "GraphSaveCount": 4,
+    "GraphMainPath": "C:\\JDM\\JDMMatrix",
     "Nodes": [
         [
             [
-                3.3,
-                1.3
+                -5.0,
+                3.0
             ],
             [
-                -5.5,
-                -2.2
+                -0.9,
+                1.5
             ]
         ],
         [
             [
-                -2.6,
-                3.6
+                4.6,
+                7.2
             ],
             [
-                2.6,
-                -2.4
+                -0.8,
+                1.5
+            ]
+        ],
+        [
+            [
+                -0.4,
+                10.1
+            ],
+            [
+                -0.8,
+                1.5
             ]
         ]
     ],
-    "CameraX": 8.082281918633583,
-    "CameraY": -70.10548881836587
+    "CameraX": -23.124243757411378,
+    "CameraY": -220.7305784722424
 }

@@ -13,9 +13,7 @@ from kivy.uix.scrollview import ScrollView
 
 from kivy.graphics import RoundedRectangle, Color
 from kivy.utils import get_color_from_hex as GetColor
-
 from .matrixHolder import MatrixHolder
-
 from src import setCanvas, CustomWidget
 
 class MatrixFunctionMenu(CustomWidget):

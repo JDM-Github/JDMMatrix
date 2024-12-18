@@ -13,7 +13,7 @@ def setCanvas(widget: Widget, color1: str, color2: str, radius : list = [10, 10,
         thickness : int = 1
         widget.color1 = Color(rgba=GetColor(color1))
         widget.rect1 = RoundedRectangle( radius=radius, size=(widget.width+(thickness*2), widget.height+(thickness*2)),
-                      pos=(widget.x-thickness, widget.y-thickness) )
+                    pos=(widget.x-thickness, widget.y-thickness) )
         widget.color2 = Color(rgba=GetColor(color2))
         widget.rect2 = RoundedRectangle( source=Source, radius=radius, size=widget.size, pos=widget.pos )
 
@@ -71,7 +71,7 @@ class CustomLabel(Label):
         self.markup = True
 
 class CustomWidget(Widget):
-    def __init__(self, pos: list[int, int], size: list[int, int], name: str, autoCall: bool = True, **kwargs):
+    def __init__(self, pos: list[int, int], size: list[int, int], name: str, autoCall: bool = True, radius=[10, 10, 10, 10], **kwargs):
         super().__init__(**kwargs)
         self.labelMode = False
         self.selector = False
@@ -87,11 +87,13 @@ class CustomWidget(Widget):
             App.get_running_app().CT.CurrentTheme.BUTTON_LINE,
             App.get_running_app().CT.CurrentTheme.BUTTON_COLOR,
             App.get_running_app().CT.CurrentTheme.BUTTON_PRESSED,
-            App.get_running_app().CT.CurrentTheme.BUTTON_FG)
+            App.get_running_app().CT.CurrentTheme.BUTTON_FG,
+            radius
+            )
             self.bind(pos=self.bindCanvas)
     
     def displayDesign(self, ColorLine: str, Color: str, ColorPressed: str, ColorForeground: str,
-                      Radius: list[int, int, int, int] = [10, 10, 10, 10], Source: str = ""):
+                      Radius: list[int, int, int, int] = [5, 5, 5, 5], Source: str = ""):
         self.clear_widgets()
         self.canvas.clear()
 
